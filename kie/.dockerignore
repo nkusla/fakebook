@@ -1,0 +1,12 @@
+# Exclude build artifacts and IDE files
+.mvn/
+*.iml
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# Exclude git files
+.git/
+.gitignore

@@ -1,0 +1,26 @@
+package com.example.rules
+
+import com.example.model.User
+
+rule "Set Admin Role for Users Over 30"
+    when
+        $user : User(age > 30, role == "USER")
+    then
+        $user.setRole("ADMIN");
+        System.out.println("User " + $user.getName() + " promoted to ADMIN role");
+end
+
+rule "Deactivate Users Under 18"
+    when
+        $user : User(age < 18, active == true)
+    then
+        $user.setActive(false);
+        System.out.println("User " + $user.getName() + " deactivated (under 18)");
+end
+
+rule "Validate Email Format"
+    when
+        $user : User(email not matches ".*@.*\\..*")
+    then
+        System.out.println("Invalid email format for user: " + $user.getName());
+end
