@@ -1,6 +1,6 @@
-package com.example.rules
+package com.fakebook.rules
 
-import com.example.model.User
+import com.fakebook.model.User
 
 rule "Set Admin Role for Users Over 30"
     when

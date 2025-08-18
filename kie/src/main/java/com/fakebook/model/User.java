@@ -1,4 +1,4 @@
-package com.example.model;
+package com.fakebook.model;
 
 public class User {
     private String name;
