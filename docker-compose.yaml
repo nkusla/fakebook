@@ -6,7 +6,7 @@ services:
     container_name: kie-server
     ports:
       - "8080:8080"
-      # - KIE_SERVER_CONTAINER_DEPLOYMENT=user-rules-container=com.example:kie-example:1.0.0
+      # - KIE_SERVER_CONTAINER_DEPLOYMENT=fakebook-rules=com.example:kie-example:1.0.0
       # - KIE_SERVER_CONTROLLER=http://business-central:8080/business-central/rest/controller
       # - KIE_SERVER_LOCATION=http://localhost:8080/kie-server/services/rest/server
     volumes:

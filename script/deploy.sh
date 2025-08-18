@@ -5,7 +5,7 @@ if curl -s -u admin:admin http://localhost:8080/kie-server/services/rest/server 
     echo "🗑️  Deleting existing KIE container..."
     curl -X DELETE \
       -u admin:admin \
-      http://localhost:8080/kie-server/services/rest/server/containers/user-rules-container
+      http://localhost:8080/kie-server/services/rest/server/containers/fakebook-rules
 
     # Deploy the container
     echo "📦 Deploying KIE container..."
@@ -13,14 +13,14 @@ if curl -s -u admin:admin http://localhost:8080/kie-server/services/rest/server 
       -u admin:admin \
       -H "Content-Type: application/json" \
       -d '{
-        "container-id": "user-rules-container",
+        "container-id": "fakebook-rules",
         "release-id": {
           "group-id": "com.fakebook",
           "artifact-id": "kie-fakebook",
           "version": "1.0.0"
         }
       }' \
-      http://localhost:8080/kie-server/services/rest/server/containers/user-rules-container
+      http://localhost:8080/kie-server/services/rest/server/containers/fakebook-rules
 
     echo ""
     echo "📋 Access Points:"

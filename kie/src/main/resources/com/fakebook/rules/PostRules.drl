@@ -1,0 +1,60 @@
+package com.fakebook.rules
+
+import com.fakebook.model.User
+import com.fakebook.model.Post
+import com.fakebook.model.Friendship
+import com.fakebook.model.Hashtag
+import java.time.LocalDateTime
+import java.util.List
+
+global List feedPosts;
+global User currentUser;
+
+rule "Create Hashtag"
+    salience 500
+when
+    $post : Post()
+    $hashtag : String() from $post.hashtags
+    not Hashtag(hashtag == $hashtag)
+then
+    Hashtag newHashtag = new Hashtag($hashtag);
+    insert(newHashtag);
+end
+
+rule "Mark Popular Hashtags"
+    salience 400
+when
+    $hashtag : Hashtag()
+    $count : Number(intValue >= 5) from accumulate(
+        $post : Post(isNewerThanHours(24), hashtags contains $hashtag.hashtag),
+        count($post)
+    )
+    eval($hashtag.isPopular() != ($count.intValue() >= 5))
+then
+    $hashtag.setPopular($count.intValue() >= 5);
+    update($hashtag);
+end
+
+rule "Mark Post Popular by Hashtag"
+    salience 300
+when
+    $post : Post(isPopular() == false)
+    exists (
+        $popularHashtag : Hashtag(isPopular() == true) and
+        String(this == $popularHashtag.hashtag) from $post.hashtags
+    )
+then
+    $post.setPopular(true);
+    update($post);
+end
+
+rule "Get Recent Friends Posts"
+    salience 100
+when
+    $friendship : Friendship(isFriend(currentUser.getUsername()))
+    $friendUsername : String() from $friendship.getFriendOf(currentUser.getUsername())
+    $post : Post(authorUsername == $friendUsername, isNewerThanDays(1))
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
