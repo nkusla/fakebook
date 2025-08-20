@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const kieServerUrl = 'http://localhost:8080/kie-server/services/rest/server/containers/instances/user-rules-container';
+const kieServerUrl = 'http://localhost:8080/kie-server/services/rest/server/containers/instances/fakebook-rules';
 const username = 'admin';
 const password = 'admin';
 

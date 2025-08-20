@@ -1,9 +1,25 @@
 services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: fb-postgres-db
+    hostname: ${DB_HOST}
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   kie-server:
     build:
       context: ./kie
       dockerfile: Dockerfile
-    container_name: kie-server
+    container_name: fb-kie-server
     ports:
       - "8080:8080"
       # - KIE_SERVER_CONTAINER_DEPLOYMENT=fakebook-rules=com.example:kie-example:1.0.0
