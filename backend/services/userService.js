@@ -1,5 +1,6 @@
 const { Result, ResultStatus } = require("../utils/result");
 const { User } = require('../models');
+const KieService = require('./kieService');
 
 class UserService {
 	static async register(user, role) {
@@ -7,7 +8,13 @@ class UserService {
 			user.role = role;
 
 			const createdUser = await User.create(user);
-			return new Result.ok(createdUser, 201);
+
+			const result = await KieService.insertUserFact(createdUser);
+			if (result.status !== ResultStatus.OK) {
+				return result;
+			}
+
+			return Result.ok(createdUser, 201);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}

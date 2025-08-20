@@ -40,11 +40,7 @@ async function testStatefulBehavior() {
 
   const userFact = {
     "com.fakebook.model.User": {
-      name: "Bobby Young",
-      age: 35,
-      email: "bobby@example.com",
-      active: true,
-      role: "USER"
+      username: "test123"
     }
   };
 
