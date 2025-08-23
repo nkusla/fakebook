@@ -1,20 +1,20 @@
 package com.fakebook.model;
 
 public class Hashtag {
-    private String hashtag;
+    private String name;
     private boolean isPopular;
 
-    public Hashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public Hashtag(String name) {
+        this.name = name;
         this.isPopular = false;
     }
 
-    public String getHashtag() {
-        return hashtag;
+    public String getName() {
+        return name;
     }
 
-    public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isPopular() {
@@ -30,11 +30,11 @@ public class Hashtag {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Hashtag that = (Hashtag) obj;
-        return hashtag.equals(that.hashtag);
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return hashtag.hashCode();
+        return name.hashCode();
     }
 }

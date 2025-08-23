@@ -36,6 +36,11 @@ class FriendshipService {
 				username2: username1 < username2 ? username2 : username1
 			});
 
+			const kieResult = KieService.insertFriendshipFact(friendship);
+			if (kieResult.status === ResultStatus.FAIL) {
+				return Result.serverError('Failed to insert friendship fact');
+			}
+
 			return Result.ok(friendship, 201);
 		} catch (error) {
 			return Result.serverError(error.message);

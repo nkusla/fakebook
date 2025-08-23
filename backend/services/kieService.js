@@ -34,12 +34,7 @@ class KieService {
 		};
 
 		return this.executeCommands([
-			{
-				"insert": {
-					"object": userFact,
-				}
-			},
-			// { "fire-all-rules": {} }
+			{ "insert": { "object": userFact } },
 		]);
 	}
 
@@ -54,14 +49,9 @@ class KieService {
 		};
 
 		return this.executeCommands([
-			{
-				"insert": {
-					"object": postFact,
-				}
-			},
-			{
-				"fire-all-rules": {}
-			}
+			{ "insert": { "object": postFact } },
+			{ "set-focus": { "name": "popular" } },
+			{ "fire-all-rules": {} }
 		]);
 	}
 
@@ -74,12 +64,7 @@ class KieService {
 		};
 
 		return this.executeCommands([
-			{
-				"insert": {
-					"object": friendshipFact,
-				}
-			},
-			// { "fire-all-rules": {} }
+			{ "insert": { "object": friendshipFact } },
 		]);
 	}
 
@@ -93,12 +78,9 @@ class KieService {
 		};
 
 		return this.executeCommands([
-			{
-				"insert": {
-					"object": likeFact,
-				}
-			},
-			// { "fire-all-rules": {} }
+			{ "insert": { "object": likeFact } },
+			{ "set-focus": { "name": "popular" } },
+			{ "fire-all-rules": {} }
 		]);
 	}
 }

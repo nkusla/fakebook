@@ -25,7 +25,6 @@ public class Post {
         this.isPopular = false;
     }
 
-    // Basic getters and setters
     public int getId() {
         return id;
     }
@@ -78,8 +77,8 @@ public class Post {
         return createdAt.isAfter(LocalDateTime.now().minusHours(hours));
     }
 
-    public boolean isNewerThanDays(int days) {
-        return createdAt.isAfter(LocalDateTime.now().minusDays(days));
+    public boolean isOlderThanHours(int hours) {
+        return createdAt.isBefore(LocalDateTime.now().minusHours(hours));
     }
 
     public boolean hasHashtag(String hashtag) {

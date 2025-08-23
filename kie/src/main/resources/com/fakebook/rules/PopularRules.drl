@@ -1,0 +1,61 @@
+package com.fakebook.rules
+
+import com.fakebook.model.Post
+import com.fakebook.model.Hashtag
+import com.fakebook.model.Like
+import java.time.LocalDateTime
+import java.util.List
+
+rule "Create Hashtag"
+    agenda-group "popular"
+    salience 500
+when
+    $post : Post()
+    $hashtagName : String() from $post.hashtags
+    not Hashtag(name == $hashtagName)
+then
+    Hashtag newHashtag = new Hashtag($hashtagName);
+    insert(newHashtag);
+end
+
+rule "Mark Popular Hashtags"
+    agenda-group "popular"
+    salience 400
+when
+    $hashtag : Hashtag(isPopular() == false)
+    $count : Number(intValue >= 3) from accumulate(
+        $post : Post(isNewerThanHours(24), hashtags contains $hashtag.name),
+        count($post)
+    )
+then
+    $hashtag.setPopular($count.intValue() >= 3);
+    update($hashtag);
+end
+
+rule "Mark Post Popular by Hashtag"
+    agenda-group "popular"
+    salience 300
+when
+    $post : Post(isPopular() == false)
+    exists (
+        $popularHashtag : Hashtag(isPopular() == true) and
+        String(this == $popularHashtag.name) from $post.hashtags
+    )
+then
+    $post.setPopular(true);
+    update($post);
+end
+
+rule "Mark Post Popular by Likes"
+    agenda-group "popular"
+    salience 200
+when
+    $post : Post(isPopular() == false, isNewerThanHours(24))
+    $likeCount : Number(intValue >= 10) from accumulate(
+        Like(postId == $post.id),
+        count(1)
+    )
+then
+    $post.setPopular(true);
+    update($post);
+end

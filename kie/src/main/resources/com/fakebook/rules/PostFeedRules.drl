@@ -1,0 +1,106 @@
+package com.fakebook.rules
+
+import com.fakebook.model.User
+import com.fakebook.model.Post
+import com.fakebook.model.Friendship
+import com.fakebook.model.Hashtag
+import com.fakebook.model.Like
+import java.time.LocalDateTime
+import java.util.List
+import java.util.Iterator
+
+global List feedPosts;
+global User currentUser;
+
+// rule "Mark Old Posts As Not Popular"
+//     salience 150
+// when
+//     $post : Post(isPopular() == true, isOlderThanHours(72))
+// then
+//     $post.setPopular(false);
+//     update($post);
+// end
+
+rule "Get Recent Friends Posts"
+    agenda-group "feed"
+    salience 100
+when
+    $friendship : Friendship(isFriend(currentUser.getUsername()))
+    $friendUsername : String() from $friendship.getFriendOf(currentUser.getUsername())
+    $post : Post(authorUsername == $friendUsername, isNewerThanHours(24))
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
+
+rule "Get Posts With Hashtags Liked By User"
+    agenda-group "feed"
+    salience 90
+when
+    $like : Like(username == currentUser.getUsername())
+    $likedPost : Post(id == $like.postId)
+    $hashtagName : String() from $likedPost.getHashtags()
+    $post : Post(this != $likedPost, getHashtags() contains $hashtagName)
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
+
+rule "Get User Posts With Their Own Hashtags"
+    agenda-group "feed"
+    salience 80
+when
+    $currentUserPost : Post(authorUsername == currentUser.getUsername())
+    $hashtagName : String() from $currentUserPost.getHashtags()
+    $post : Post(this != $currentUserPost, getHashtags() contains $hashtagName)
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
+
+rule "Get Popular Hashtag Posts Liked By User"
+    agenda-group "feed"
+    salience 70
+when
+    $like : Like(username == currentUser.getUsername())
+    $likedPost : Post(id == $like.postId)
+    $hashtagName : String() from $likedPost.getHashtags()
+    $hashtag : Hashtag(isPopular() == true, name == $hashtagName)
+    $post : Post(
+        this != $likedPost,
+        getHashtags() contains $hashtag.name,
+        isPopular() == true
+    )
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
+
+rule "Get Popular Non-Friend Posts"
+    agenda-group "feed"
+    salience 60
+when
+    $post : Post(isPopular() == true)
+    not Friendship(
+        isFriend(currentUser.getUsername()),
+        getFriendOf(currentUser.getUsername()) contains $post.authorUsername
+    )
+    not Post(this == $post) from feedPosts
+then
+    feedPosts.add($post);
+end
+
+rule "Remove Old And Self Posts From Feed"
+    agenda-group "feed"
+    salience 5
+when
+    // Always runs
+then
+    for (Iterator it = feedPosts.iterator(); it.hasNext();) {
+        Post post = (Post) it.next();
+        if (post.isOlderThanHours(72) ||
+            post.getAuthorUsername().equals(currentUser.getUsername())) {
+            it.remove();
+        }
+    }
+end
