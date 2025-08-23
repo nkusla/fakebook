@@ -1,8 +1,10 @@
 'use strict';
+const kieService = require('../../services/kieService');
+const { Result, ResultStatus } = require('../../utils/result');
 
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		return queryInterface.bulkInsert('Friendships', [
+		const friendships = [
 			{
 				username1: 'trksi123',
 				username2: 'zeka123',
@@ -11,7 +13,18 @@ module.exports = {
 				username1: 'trksi123',
 				username2: 'cico123',
 			}
-		], {});
+		];
+
+		const result = await queryInterface.bulkInsert('Friendships', friendships, {});
+
+		for (const friendship of friendships) {
+			const result = await kieService.insertFriendshipFact(friendship);
+			if (result.status === ResultStatus.FAIL) {
+				console.warn(`Failed to insert friendship fact between ${friendship.username1} and ${friendship.username2}: ${result.message}`);
+			}
+		}
+
+		return result;
 	},
 
 	down: async (queryInterface, Sequelize) => {

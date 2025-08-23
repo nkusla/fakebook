@@ -9,9 +9,9 @@ class UserService {
 
 			const createdUser = await User.create(user);
 
-			const result = await KieService.insertUserFact(createdUser);
-			if (result.status !== ResultStatus.OK) {
-				return result;
+			const kieResult = await KieService.insertUserFact(createdUser);
+			if (kieResult.status === ResultStatus.FAIL) {
+				return kieResult;
 			}
 
 			return Result.ok(createdUser, 201);

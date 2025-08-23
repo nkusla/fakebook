@@ -42,6 +42,44 @@ class KieService {
 			// { "fire-all-rules": {} }
 		]);
 	}
+
+	async insertPostFact(post) {
+		const postFact = {
+			"com.fakebook.model.Post": {
+				"id": post.id,
+				"authorUsername": post.authorUsername,
+				"hashtags": post.hashtags,
+				"createdAt": post.createdAt
+			}
+		};
+
+		return this.executeCommands([
+			{
+				"insert": {
+					"object": postFact,
+				}
+			},
+			// { "fire-all-rules": {} }
+		]);
+	}
+
+	async insertFriendshipFact(friendship) {
+		const friendshipFact = {
+			"com.fakebook.model.Friendship": {
+				"username1": friendship.username1,
+				"username2": friendship.username2
+			}
+		};
+
+		return this.executeCommands([
+			{
+				"insert": {
+					"object": friendshipFact,
+				}
+			},
+			// { "fire-all-rules": {} }
+		]);
+	}
 }
 
 module.exports = new KieService();

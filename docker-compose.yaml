@@ -22,17 +22,5 @@ services:
     container_name: fb-kie-server
     ports:
       - "8080:8080"
-      # - KIE_SERVER_CONTAINER_DEPLOYMENT=fakebook-rules=com.example:kie-example:1.0.0
-      # - KIE_SERVER_CONTROLLER=http://business-central:8080/business-central/rest/controller
-      # - KIE_SERVER_LOCATION=http://localhost:8080/kie-server/services/rest/server
     volumes:
       - ./kie/target:/opt/jboss/.m2/repository/com/fakebook/kie-fakebook/1.0.0
-
-  # business-central:
-  #   image: jboss/business-central-workbench-showcase:latest
-  #   container_name: business-central
-  #   ports:
-  #     - "8001:8080"
-  #   environment:
-  #     - KIE_ADMIN_USER=admin
-  #     - KIE_ADMIN_PWD=admin

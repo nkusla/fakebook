@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "🔍 Checking server status..."
 if curl -s -u admin:admin http://localhost:8080/kie-server/services/rest/server > /dev/null; then
     echo "✅ KIE Server is running with your custom User class and rules!"

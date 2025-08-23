@@ -1,8 +1,10 @@
 'use strict';
+const kieService = require('../../services/kieService');
+const { Result, ResultStatus } = require('../../utils/result');
 
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		return queryInterface.bulkInsert('Users', [
+		const users = [
 			{
 				name: 'Stefan',
 				surname: 'Trkulja',
@@ -49,7 +51,18 @@ module.exports = {
 				address: "Naselje",
 				role: 'admin',
 			},
-		], {});
+		];
+
+		const result = await queryInterface.bulkInsert('Users', users, {});
+
+		for (const user of users) {
+			const result = await kieService.insertUserFact(user);
+			if (result.status === ResultStatus.FAIL) {
+				console.warn(`Failed to insert user fact for username ${user.username}: ${result.message}`);
+			}
+		}
+
+		return result;
 	},
 
 	down: async (queryInterface, Sequelize) => {
