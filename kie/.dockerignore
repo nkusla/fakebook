@@ -10,3 +10,4 @@ Thumbs.db
 # Exclude git files
 .git/
 .gitignore
+scripts/
