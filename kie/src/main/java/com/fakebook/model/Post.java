@@ -7,16 +7,17 @@ import java.util.Objects;
 
 public class Post {
     private int id;
-    private String content;
     private String authorUsername;
     private boolean isFlagged;
     private LocalDateTime createdAt;
     private List<String> hashtags;
     private boolean isPopular;
 
-    public Post(int id, String content, String authorUsername) {
+    public Post() {
+    }
+
+    public Post(int id, String authorUsername) {
         this.id = id;
-        this.content = content;
         this.authorUsername = authorUsername;
         this.isFlagged = false;
         this.createdAt = LocalDateTime.now();
@@ -24,9 +25,8 @@ public class Post {
         this.isPopular = false;
     }
 
-    public Post(int id, String content, String authorUsername, LocalDateTime createdAt) {
+    public Post(int id, String authorUsername, LocalDateTime createdAt) {
         this.id = id;
-        this.content = content;
         this.authorUsername = authorUsername;
         this.isFlagged = false;
         this.createdAt = createdAt;
@@ -41,14 +41,6 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getAuthorUsername() {

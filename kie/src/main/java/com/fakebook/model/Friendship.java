@@ -4,6 +4,9 @@ public class Friendship {
     private String username1;
     private String username2;
 
+    public Friendship() {
+    }
+
     public Friendship(String username1, String username2) {
         this.username1 = username1;
         this.username2 = username2;

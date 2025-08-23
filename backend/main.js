@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const sequelize = require('./models/index').sequelize;
 
 const userRoute = require('./routes/userRoute');
+const friendshipRoute = require('./routes/friendshipRoute');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 // Routes go here
 
 app.use('/api/user', userRoute);
+app.use('/api/friendship', friendshipRoute);
 
 app.get("/api/ping", (_, res) => {
 	res.status(200).json({ message: "pong" });

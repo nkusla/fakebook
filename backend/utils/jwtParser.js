@@ -15,7 +15,7 @@ exports.generateToken = (user) => {
 	);
 }
 
-exports.verifyToken = (role) => (req, res, next) => {
+exports.verifyToken = (role = null) => (req, res, next) => {
 	const token = req.cookies ? req.cookies.token : null;
 
 	if (!token) {
@@ -32,24 +32,6 @@ exports.verifyToken = (role) => (req, res, next) => {
 		return res.status(403).json({ message: 'Forbidden' });
 	}
 
-	req.user = tokenUser;
-	next();
-}
-
-exports.extractTokenUser = (req, res, next) => {
-	const token = req.cookies ? req.cookies.token : null;
-	if (!token) {
-		req.user = null;
-		next();
-	}
-
-	const result = exports.decodeToken(token);
-	if (result.status === ResultStatus.FAIL) {
-		req.user = null;
-		next();
-	}
-
-	const tokenUser = result.data;
 	req.user = tokenUser;
 	next();
 }
