@@ -14,14 +14,11 @@ module.exports = (sequelize, DataTypes) => {
 			Friendship.belongsTo(models.User, {
 				foreignKey: 'username1',
 				targetKey: 'username',
-				as: 'user1'
 			});
 
-			// Friendship belongs to user2
 			Friendship.belongsTo(models.User, {
 				foreignKey: 'username2',
 				targetKey: 'username',
-				as: 'user2'
 			});
 		}
 	}

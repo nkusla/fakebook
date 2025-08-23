@@ -1,4 +1,4 @@
-const { Post, User } = require('../models')
+const { Post, User, Like } = require('../models')
 const { Result, ResultStatus } = require('../utils/result');
 const KieService = require('./kieService');
 
@@ -40,13 +40,57 @@ class PostService {
 				return Result.fail('Author username is required');
 			}
 
-			const posts = await Post.findAll({ where: { authorUsername } });
+			const posts = await Post.findAll({
+				where: { authorUsername },
+				attributes: {
+					include: [
+						[
+							// Sequelize.fn('COUNT', Sequelize.col('Likes.id')) will count likes for each post
+							require('sequelize').fn('COUNT', require('sequelize').col('Likes.postId')),
+							'likeCount'
+						]
+					]
+				},
+				include: [
+					{
+						model: Like,
+						attributes: [],
+					}
+				],
+				group: ['Post.id'],
+				order: [['createdAt', 'DESC']]
+			});
 
 			if (!posts || posts.length === 0) {
 				return Result.notFound('No posts found');
 			}
 
 			return Result.ok(posts);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async likePost(postId, username) {
+		try {
+			if (!postId || !username) {
+				return Result.fail('Post ID and username are required');
+			}
+
+			const post = await Post.findByPk(postId);
+
+			if (!post) {
+				return Result.notFound('Post not found');
+			}
+
+			const like = await Like.create({ postId, username });
+
+			const kieResult = await KieService.insertLikeFact(like);
+			if (kieResult.status === ResultStatus.FAIL) {
+				return kieResult;
+			}
+
+			return Result.ok(like, 201);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}

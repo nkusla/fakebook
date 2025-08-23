@@ -59,7 +59,9 @@ class KieService {
 					"object": postFact,
 				}
 			},
-			// { "fire-all-rules": {} }
+			{
+				"fire-all-rules": {}
+			}
 		]);
 	}
 
@@ -75,6 +77,25 @@ class KieService {
 			{
 				"insert": {
 					"object": friendshipFact,
+				}
+			},
+			// { "fire-all-rules": {} }
+		]);
+	}
+
+	async insertLikeFact(like) {
+		const likeFact = {
+			"com.fakebook.model.Like": {
+				"postId": like.postId,
+				"username": like.username,
+				"createdAt": like.createdAt
+			}
+		};
+
+		return this.executeCommands([
+			{
+				"insert": {
+					"object": likeFact,
 				}
 			},
 			// { "fire-all-rules": {} }

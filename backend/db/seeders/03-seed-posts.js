@@ -1,5 +1,5 @@
 'use strict';
-const kieService = require('../../services/kieService');
+const KieService = require('../../services/kieService');
 const { Result, ResultStatus } = require('../../utils/result');
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
 		const result = await queryInterface.bulkInsert('Posts', posts, {});
 
 		for (const post of posts) {
-			const result = await kieService.insertPostFact(post);
+			const result = await KieService.insertPostFact(post);
 			if (result.status === ResultStatus.FAIL) {
 				console.warn(`Failed to insert post fact for post ID ${post.id}: ${result.message}`);
 			}

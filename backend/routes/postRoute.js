@@ -30,10 +30,26 @@ router.get('/',
 		const result = await postService.getPostsByUser(authorUsername);
 
 		if (result.status === ResultStatus.FAIL) {
-			return res.status(result.status).json({ error: result.errors });
+			return res.status(result.code).json({ error: result.errors });
 		}
 
 		return res.status(200).json(result.data);
+	}
+);
+
+router.post('/:id/like',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const postId = req.params.id;
+		const username = req.user.username;
+
+		const result = await postService.likePost(postId, username);
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ error: result.errors });
+		}
+
+		return res.status(201).json(result.data);
 	}
 );
 

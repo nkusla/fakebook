@@ -11,21 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // A user can have many friendships as username1
       User.hasMany(models.Friendship, {
         foreignKey: 'username1',
-        as: 'friendships1'
       });
 
-      // A user can have many friendships as username2
       User.hasMany(models.Friendship, {
         foreignKey: 'username2',
-        as: 'friendships2'
       });
 
       User.hasMany(models.Post, {
         foreignKey: 'authorUsername',
-        as: 'posts'
+      });
+
+      User.hasMany(models.Like, {
+        foreignKey: 'username',
       });
     }
   }

@@ -4,11 +4,12 @@ import com.fakebook.model.User
 import com.fakebook.model.Post
 import com.fakebook.model.Friendship
 import com.fakebook.model.Hashtag
+import com.fakebook.model.Like
 import java.time.LocalDateTime
 import java.util.List
 
-global List feedPosts;
-global User currentUser;
+// global List feedPosts;
+// global User currentUser;
 
 rule "Create Hashtag"
     salience 500
@@ -48,13 +49,13 @@ then
     update($post);
 end
 
-rule "Get Recent Friends Posts"
-    salience 100
-when
-    $friendship : Friendship(isFriend(currentUser.getUsername()))
-    $friendUsername : String() from $friendship.getFriendOf(currentUser.getUsername())
-    $post : Post(authorUsername == $friendUsername, isNewerThanDays(1))
-    not Post(this == $post) from feedPosts
-then
-    feedPosts.add($post);
-end
+// rule "Get Recent Friends Posts"
+//     salience 100
+// when
+//     $friendship : Friendship(isFriend(currentUser.getUsername()))
+//     $friendUsername : String() from $friendship.getFriendOf(currentUser.getUsername())
+//     $post : Post(authorUsername == $friendUsername, isNewerThanDays(1))
+//     not Post(this == $post) from feedPosts
+// then
+//     feedPosts.add($post);
+// end

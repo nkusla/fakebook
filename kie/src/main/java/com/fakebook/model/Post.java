@@ -16,15 +16,6 @@ public class Post {
     public Post() {
     }
 
-    public Post(int id, String authorUsername) {
-        this.id = id;
-        this.authorUsername = authorUsername;
-        this.isFlagged = false;
-        this.createdAt = LocalDateTime.now();
-        this.hashtags = new ArrayList<>();
-        this.isPopular = false;
-    }
-
     public Post(int id, String authorUsername, LocalDateTime createdAt) {
         this.id = id;
         this.authorUsername = authorUsername;
