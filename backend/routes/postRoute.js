@@ -56,17 +56,15 @@ router.post('/:id/like',
 router.get('/feed',
 	jwtParser.verifyToken(),
 	async (req, res) => {
-		const authorUsername = req.user.username;
+		const username = req.user.username;
 
-		// const result = await postService.getFeedPosts(authorUsername);
+		const result = await postService.getFeedPosts(username);
 
-		// if (result.status === ResultStatus.FAIL) {
-		// 	return res.status(result.status).json({ error: result.errors });
-		// }
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.status).json({ error: result.errors });
+		}
 
-		// return res.status(200).json(result.data);
-
-		return res.status(501).json({ error: 'Not implemented' });
+		return res.status(200).json(result.data);
 	}
 );
 

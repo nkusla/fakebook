@@ -8,6 +8,15 @@ class KieService {
 		this.password = process.env.KIE_PASSWORD;
 	}
 
+	async setDummyGlobals() {
+		const commands = [
+			{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": "testUser" } } } },
+			{ "set-global": { "identifier": "feedPosts", "object": [] } }
+		];
+
+		return this.executeCommands(commands);
+	}
+
 	// Generic method for executing commands
 	async executeCommands(commands) {
 		try {
@@ -82,6 +91,19 @@ class KieService {
 			{ "set-focus": { "name": "popular" } },
 			{ "fire-all-rules": {} }
 		]);
+	}
+
+	async getFeedPosts(username) {
+
+		const commands = [
+			{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": username } } } },
+			{ "set-global": { "identifier": "feedPosts", "object": [] } },
+			{ "set-focus": { "name": "feed" } },
+			{ "fire-all-rules": {} },
+			{ "get-global": { "identifier": "feedPosts" } }
+		];
+
+		return this.executeCommands(commands);
 	}
 }
 

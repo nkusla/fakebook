@@ -9,8 +9,8 @@ import java.time.LocalDateTime
 import java.util.List
 import java.util.Iterator
 
-global List feedPosts;
-global User currentUser;
+global java.util.List feedPosts;
+global com.fakebook.model.User currentUser;
 
 // rule "Mark Old Posts As Not Popular"
 //     salience 150

@@ -95,6 +95,25 @@ class PostService {
 			return Result.serverError(error.message);
 		}
 	}
+
+	static async getFeedPosts(username) {
+		try {
+			if (!username) {
+				return Result.fail('Username is required');
+			}
+
+			const feedPosts = await KieService.getFeedPosts(username);
+
+			if (feedPosts.status === ResultStatus.FAIL) {
+				return feedPosts;
+			}
+
+			return Result.ok(feedPosts.data);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
 }
 
 module.exports = PostService;

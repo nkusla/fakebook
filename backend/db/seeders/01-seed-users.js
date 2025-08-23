@@ -53,6 +53,8 @@ module.exports = {
 			},
 		];
 
+		await KieService.setDummyGlobals();
+
 		const result = await queryInterface.bulkInsert('Users', users, {});
 
 		for (const user of users) {
