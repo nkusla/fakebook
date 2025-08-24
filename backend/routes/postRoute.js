@@ -61,7 +61,7 @@ router.get('/feed',
 		const result = await postService.getFeedPosts(username);
 
 		if (result.status === ResultStatus.FAIL) {
-			return res.status(result.status).json({ error: result.errors });
+			return res.status(result.code).json({ error: result.errors });
 		}
 
 		return res.status(200).json(result.data);

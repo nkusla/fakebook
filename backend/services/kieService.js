@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { Result } = require('../utils/result');
+const { Result, ResultStatus } = require('../utils/result');
 
 class KieService {
 	constructor() {
@@ -8,21 +8,27 @@ class KieService {
 		this.password = process.env.KIE_PASSWORD;
 	}
 
-	async setDummyGlobals() {
-		const commands = [
-			{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": "testUser" } } } },
-			{ "set-global": { "identifier": "feedPosts", "object": [] } }
-		];
+	async setDummyGlobals(username = "testUser") {
+		// const commands = [
+		// 	{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": username } } } },
+		// 	{ "set-global": { "identifier": "feedPosts", "object": [] } }
+		// ];
 
-		return this.executeCommands(commands);
+		// return this.executeCommands(commands);
 	}
 
 	// Generic method for executing commands
 	async executeCommands(commands) {
+
+		const payload = {
+			"lookup": "ksession-rules",
+			"commands": commands
+		};
+
 		try {
 			const response = await axios.post(
 				this.kieServerUrl,
-				{ commands },
+				payload,
 				{
 					auth: { username: this.username, password: this.password },
 					headers: { 'Content-Type': 'application/json' }
@@ -96,14 +102,22 @@ class KieService {
 	async getFeedPosts(username) {
 
 		const commands = [
-			{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": username } } } },
-			{ "set-global": { "identifier": "feedPosts", "object": [] } },
+			//{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": "zeka123" } } } },
+			// { "set-global": { "identifier": "feedPosts", "object": [] } },
 			{ "set-focus": { "name": "feed" } },
 			{ "fire-all-rules": {} },
-			{ "get-global": { "identifier": "feedPosts" } }
+			//{ "get-global": { "identifier": "feedPosts" } }
 		];
 
-		return this.executeCommands(commands);
+		const result = await this.executeCommands(commands);
+
+		if (result.status === ResultStatus.FAIL) {
+			return result;
+		}
+
+		// const response = result.data;
+		// const feedPosts = response.result['execution-results'].results[0].value;
+		return Result.ok(result.data);
 	}
 }
 
