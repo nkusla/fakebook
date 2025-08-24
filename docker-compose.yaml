@@ -14,13 +14,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  kie-server:
-    build:
-      context: ./kie
-      dockerfile: Dockerfile
-    container_name: fb-kie-server
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./kie/target:/opt/jboss/.m2/repository/com/fakebook/kie-fakebook/1.0.0

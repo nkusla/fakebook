@@ -9,17 +9,8 @@ import java.time.LocalDateTime
 import java.util.List
 import java.util.Iterator
 
-global java.util.List feedPosts;
 global com.fakebook.model.User currentUser;
-
-// rule "Mark Old Posts As Not Popular"
-//     salience 150
-// when
-//     $post : Post(isPopular() == true, isOlderThanHours(72))
-// then
-//     $post.setPopular(false);
-//     update($post);
-// end
+global java.util.List feedPosts;
 
 rule "Get Recent Friends Posts"
     agenda-group "feed"
@@ -27,7 +18,7 @@ rule "Get Recent Friends Posts"
 when
     $friendship : Friendship(isFriend(currentUser.getUsername()))
     $friendUsername : String() from $friendship.getFriendOf(currentUser.getUsername())
-    $post : Post(authorUsername == $friendUsername, isNewerThanHours(24))
+    $post : Post(authorUsername == $friendUsername, isNewerThanHours(24), authorUsername != currentUser.getUsername())
     not Post(this == $post) from feedPosts
 then
     feedPosts.add($post);
@@ -40,7 +31,7 @@ when
     $like : Like(username == currentUser.getUsername())
     $likedPost : Post(id == $like.postId)
     $hashtagName : String() from $likedPost.getHashtags()
-    $post : Post(this != $likedPost, getHashtags() contains $hashtagName)
+    $post : Post(this != $likedPost, getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
     not Post(this == $post) from feedPosts
 then
     feedPosts.add($post);
@@ -52,7 +43,7 @@ rule "Get User Posts With Their Own Hashtags"
 when
     $currentUserPost : Post(authorUsername == currentUser.getUsername())
     $hashtagName : String() from $currentUserPost.getHashtags()
-    $post : Post(this != $currentUserPost, getHashtags() contains $hashtagName)
+    $post : Post(this != $currentUserPost, getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
     not Post(this == $post) from feedPosts
 then
     feedPosts.add($post);
@@ -69,7 +60,8 @@ when
     $post : Post(
         this != $likedPost,
         getHashtags() contains $hashtag.name,
-        isPopular() == true
+        isPopular() == true,
+        authorUsername != currentUser.getUsername()
     )
     not Post(this == $post) from feedPosts
 then
@@ -80,7 +72,7 @@ rule "Get Popular Non-Friend Posts"
     agenda-group "feed"
     salience 60
 when
-    $post : Post(isPopular() == true)
+    $post : Post(isPopular() == true, authorUsername != currentUser.getUsername())
     not Friendship(
         isFriend(currentUser.getUsername()),
         getFriendOf(currentUser.getUsername()) contains $post.authorUsername
@@ -88,19 +80,4 @@ when
     not Post(this == $post) from feedPosts
 then
     feedPosts.add($post);
-end
-
-rule "Remove Old And Self Posts From Feed"
-    agenda-group "feed"
-    salience 5
-when
-    // Always runs
-then
-    for (Iterator it = feedPosts.iterator(); it.hasNext();) {
-        Post post = (Post) it.next();
-        if (post.isOlderThanHours(72) ||
-            post.getAuthorUsername().equals(currentUser.getUsername())) {
-            it.remove();
-        }
-    }
 end

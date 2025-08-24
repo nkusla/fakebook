@@ -4,36 +4,16 @@ const { Result, ResultStatus } = require('../utils/result');
 class KieService {
 	constructor() {
 		this.kieServerUrl = process.env.KIE_SERVER_URL;
-		this.username = process.env.KIE_USERNAME;
-		this.password = process.env.KIE_PASSWORD;
-	}
-
-	async setDummyGlobals(username = "testUser") {
-		// const commands = [
-		// 	{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": username } } } },
-		// 	{ "set-global": { "identifier": "feedPosts", "object": [] } }
-		// ];
-
-		// return this.executeCommands(commands);
+		this.axios = axios.create({
+			baseURL: this.kieServerUrl,
+			headers: { 'Content-Type': 'application/json' }
+		});
 	}
 
 	// Generic method for executing commands
-	async executeCommands(commands) {
-
-		const payload = {
-			"lookup": "ksession-rules",
-			"commands": commands
-		};
-
+	async insertFact(fact, path) {
 		try {
-			const response = await axios.post(
-				this.kieServerUrl,
-				payload,
-				{
-					auth: { username: this.username, password: this.password },
-					headers: { 'Content-Type': 'application/json' }
-				}
-			);
+			const response = await this.axios.post(path, fact);
 			return Result.ok(response.data);
 		} catch (error) {
 			console.error('❌ KIE Server Error:', error.response?.data || error.message);
@@ -43,81 +23,50 @@ class KieService {
 
 	async insertUserFact(user) {
 		const userFact = {
-			"com.fakebook.model.User": {
-				"username": user.username
-			}
+			"username": user.username
 		};
 
-		return this.executeCommands([
-			{ "insert": { "object": userFact } },
-		]);
+		return this.insertFact(userFact, '/user');
 	}
 
 	async insertPostFact(post) {
 		const postFact = {
-			"com.fakebook.model.Post": {
-				"id": post.id,
-				"authorUsername": post.authorUsername,
-				"hashtags": post.hashtags,
-				"createdAt": post.createdAt
-			}
+			"id": post.id,
+			"authorUsername": post.authorUsername,
+			"hashtags": post.hashtags,
+			"createdAt": post.createdAt
 		};
 
-		return this.executeCommands([
-			{ "insert": { "object": postFact } },
-			{ "set-focus": { "name": "popular" } },
-			{ "fire-all-rules": {} }
-		]);
+		return this.insertFact(postFact, '/post');
 	}
 
 	async insertFriendshipFact(friendship) {
 		const friendshipFact = {
-			"com.fakebook.model.Friendship": {
-				"username1": friendship.username1,
-				"username2": friendship.username2
-			}
+			"username1": friendship.username1,
+			"username2": friendship.username2
 		};
 
-		return this.executeCommands([
-			{ "insert": { "object": friendshipFact } },
-		]);
+		return this.insertFact(friendshipFact, '/friendship');
 	}
 
 	async insertLikeFact(like) {
 		const likeFact = {
-			"com.fakebook.model.Like": {
-				"postId": like.postId,
-				"username": like.username,
-				"createdAt": like.createdAt
-			}
+			"postId": like.postId,
+			"username": like.username,
+			"createdAt": like.createdAt
 		};
 
-		return this.executeCommands([
-			{ "insert": { "object": likeFact } },
-			{ "set-focus": { "name": "popular" } },
-			{ "fire-all-rules": {} }
-		]);
+		return this.insertFact(likeFact, '/like');
 	}
 
 	async getFeedPosts(username) {
-
-		const commands = [
-			//{ "set-global": { "identifier": "currentUser", "object": { "com.fakebook.model.User": { "username": "zeka123" } } } },
-			// { "set-global": { "identifier": "feedPosts", "object": [] } },
-			{ "set-focus": { "name": "feed" } },
-			{ "fire-all-rules": {} },
-			//{ "get-global": { "identifier": "feedPosts" } }
-		];
-
-		const result = await this.executeCommands(commands);
-
-		if (result.status === ResultStatus.FAIL) {
-			return result;
+		try {
+			const response = await this.axios.get(`/feed/${username}`);
+			return Result.ok(response.data);
+		} catch (error) {
+			console.error('❌ KIE Server Error:', error.response?.data || error.message);
+			return Result.serverError('Failed to retrieve feed');
 		}
-
-		// const response = result.data;
-		// const feedPosts = response.result['execution-results'].results[0].value;
-		return Result.ok(result.data);
 	}
 }
 
