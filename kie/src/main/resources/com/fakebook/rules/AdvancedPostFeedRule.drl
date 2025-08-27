@@ -1,0 +1,64 @@
+package com.fakebook.rules
+
+import com.fakebook.model.Similarity
+import com.fakebook.model.User
+import com.fakebook.model.Post
+import com.fakebook.model.Like
+import com.fakebook.model.Hashtag
+import java.time.LocalDateTime
+import java.util.List
+
+global List allPosts;
+global List allLikes;
+global User currentUser;
+global List feedPosts;
+
+rule "Reset Score"
+	agenda-group "advanced-feed"
+	salience 100
+when
+	$post : Post()
+then
+  $post.resetScore();
+end
+
+rule "Score Post Liked By Similar User"
+	agenda-group "advanced-feed"
+	salience 100
+when
+	$otherUser : User(username != currentUser.getUsername())
+	eval(Similarity.pearsonCorrelation(currentUser, $otherUser, allPosts, allLikes) >= 0.5)
+	$like : Like(username == $otherUser.getUsername())
+	$post : Post(id == $like.postId, authorUsername != currentUser.getUsername())
+then
+	$post.addScore(1);
+  feedPosts.add($post);
+end
+
+rule "Score Post Similar To Liked Post"
+	agenda-group "feed"
+	salience 90
+when
+	$like : Like(username == currentUser.getUsername())
+	$likedPost : Post(id == $like.postId)
+	$post : Post(this != $likedPost, authorUsername != currentUser.getUsername())
+	eval(Similarity.likerOverlap($likedPost, $post, allLikes) >= 0.7)
+then
+	$post.addScore(1);
+  feedPosts.add($post);
+end
+
+rule "Score Post Matching User Preferences"
+	agenda-group "feed"
+	salience 80
+when
+	$hashtag : Hashtag()
+	$post : Post($id : id, getHashtags() contains $hashtag.getName(), authorUsername != currentUser.getUsername())
+
+	$recentLikes : List(size >= 3) from collect (
+		Like(username == currentUser.getUsername(), isNewerThanHours(72), postId == $id)
+	)
+then
+	$post.addScore(1);
+  feedPosts.add($post);
+end

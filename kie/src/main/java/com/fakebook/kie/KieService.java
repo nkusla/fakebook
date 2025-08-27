@@ -14,6 +14,8 @@ public class KieService {
 	private final KieSession kieSession;
 	private final User currentUser;
 	private final List<Post> feedPosts;
+	private final List<Post> allPosts = new ArrayList<>();
+	private final List<Like> allLikes = new ArrayList<>();
 
 	public KieService() {
 		KieServices kieServices = KieServices.get();
@@ -29,6 +31,8 @@ public class KieService {
 
 		kieSession.setGlobal("currentUser", currentUser);
 		kieSession.setGlobal("feedPosts", feedPosts);
+		kieSession.setGlobal("allPosts", allPosts);
+		kieSession.setGlobal("allLikes", allLikes);
 	}
 
 	private void refreshFacts() {
@@ -41,7 +45,7 @@ public class KieService {
 	}
 
 	public void insertFact(Object fact, String agendaGroup) {
-		if (agendaGroup != null && !agendaGroup.isEmpty()) {
+		if (!agendaGroup.isEmpty()) {
 			kieSession.getAgenda().getAgendaGroup(agendaGroup).setFocus();
 		}
 
@@ -50,6 +54,12 @@ public class KieService {
 	}
 
 	public void insertFact(Object fact) {
+		if (fact instanceof Post) {
+			allPosts.add((Post) fact);
+		} else if (fact instanceof Like) {
+			allLikes.add((Like) fact);
+		}
+
 		insertFact(fact, "");
 	}
 
@@ -59,6 +69,17 @@ public class KieService {
 		currentUser.setUsername(username);
 		feedPosts.clear();
 		this.kieSession.getAgenda().getAgendaGroup("feed").setFocus();
+		this.kieSession.fireAllRules();
+
+		return feedPosts;
+	}
+
+	public List<Post> getAdvancedFeedPosts(String username) {
+		refreshFacts();
+
+		currentUser.setUsername(username);
+		feedPosts.clear();
+		this.kieSession.getAgenda().getAgendaGroup("advanced-feed").setFocus();
 		this.kieSession.fireAllRules();
 
 		return feedPosts;

@@ -12,6 +12,7 @@ public class Post {
     private LocalDateTime createdAt;
     private List<String> hashtags;
     private boolean isPopular;
+    private int score;
 
     public Post() {
     }
@@ -23,6 +24,7 @@ public class Post {
         this.createdAt = createdAt;
         this.hashtags = new ArrayList<>();
         this.isPopular = false;
+        this.score = 0;
     }
 
     public int getId() {
@@ -83,6 +85,18 @@ public class Post {
 
     public boolean hasHashtag(String hashtag) {
         return hashtags.contains(hashtag);
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public void resetScore() {
+        this.score = 0;
+    }
+
+    public void addScore(int value) {
+        this.score += value;
     }
 
     @Override
