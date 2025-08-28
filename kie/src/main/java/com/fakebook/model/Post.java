@@ -13,6 +13,7 @@ public class Post {
     private List<String> hashtags;
     private boolean isPopular;
     private int score;
+    private String recommendationTag;
 
     public Post() {
     }
@@ -25,6 +26,7 @@ public class Post {
         this.hashtags = new ArrayList<>();
         this.isPopular = false;
         this.score = 0;
+        this.recommendationTag = "";
     }
 
     public int getId() {
@@ -73,6 +75,14 @@ public class Post {
 
     public void setPopular(boolean popular) {
         isPopular = popular;
+    }
+
+    public String getRecommendationTag() {
+        return recommendationTag;
+    }
+
+    public void setRecommendationTag(String recommendationTag) {
+        this.recommendationTag = recommendationTag;
     }
 
     public boolean isNewerThanHours(int hours) {

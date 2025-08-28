@@ -33,7 +33,7 @@ class KieService {
 			"id": post.id,
 			"authorUsername": post.authorUsername,
 			"content": post.content,
-			"hashtags": post.hashtags,
+			"hashtags": post.hashtags || [],
 			"createdAt": post.createdAt
 		};
 

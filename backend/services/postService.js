@@ -56,10 +56,13 @@ class PostService {
 					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
 					return {
 						...post.toJSON(),
+						hashtags: post.hashtags || [],
 						likeCount
 					};
 				})
 			);
+
+
 
 			return Result.ok(postsWithLikes);
 		} catch (error) {

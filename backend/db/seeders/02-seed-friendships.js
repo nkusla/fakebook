@@ -7,7 +7,7 @@ module.exports = {
 		const friendships = [
 			{
 				username1: 'trksi123',
-				username2: 'zeka123',
+				username2: 'kico123',
 			},
 			{
 				username1: 'trksi123',
