@@ -7,58 +7,86 @@ module.exports = {
 		const posts = [
 			{
 				id: 0,
-				authorUsername: 'trksi123',
-				content: 'This is a post by Stefan.',
-				hashtags: ['welcome'],
+				authorUsername: 'meda123',
+				content: 'This is a post by Meda from 🌲',
+				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 1,
-				authorUsername: 'zeka123',
-				content: 'This is a post by Nemanja.',
+				authorUsername: 'meda123',
+				content: 'This is a post by Meda from BIH',
 				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 2,
 				authorUsername: 'cico123',
-				content: 'This is a post by Milos.',
-				hashtags: ['welcome'],
+				content: 'THE BEST SUMMER',
+				hashtags: ['summer'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 3,
-				authorUsername: 'kico123',
-				content: 'This is a post by Aljosa.',
-				hashtags: ['welcome'],
+				authorUsername: 'cico123',
+				content: 'ON THE BEACH',
+				hashtags: ['summer'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 4,
-				authorUsername: 'kico123',
-				content: 'This is a post by Aljosa.',
-				hashtags: null,
+				authorUsername: 'zeka123',
+				content: 'I like Tesla cars',
+				hashtags: ['car'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 5,
-				authorUsername: 'kico123',
-				content: 'This is a post by Aljosa.',
-				hashtags: null,
+				authorUsername: 'dule123',
+				content: 'I like carting 🏎️',
+				hashtags: ['car'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 6,
-				authorUsername: 'kico123',
-				content: 'This is a post by Aljosa.',
-				hashtags: null,
+				authorUsername: 'deki123',
+				content: 'World of Warcraft ⚔️',
+				hashtags: ['wow'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
 				id: 7,
-				authorUsername: 'kico123',
-				content: 'This is a post by Aljosa.',
-				hashtags: null,
+				authorUsername: 'deki123',
+				content: 'World of Warcraft 🛡️',
+				hashtags: ['wow'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 8,
+				authorUsername: 'luka123',
+				content: 'World of Warcraft 🧙‍♂️',
+				hashtags: ['wow'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 9,
+				authorUsername: 'luka123',
+				content: 'Games 🎮',
+				hashtags: ['game'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 10,
+				authorUsername: 'djuka123',
+				content: 'Games 🕹️',
+				hashtags: ['game'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 11,
+				authorUsername: 'djuka123',
+				content: 'Games 🎲',
+				hashtags: ['game'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];

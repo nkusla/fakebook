@@ -51,7 +51,7 @@ rule "Mark Post Popular by Likes"
   salience 200
 when
   $post : Post(isPopular() == false, isNewerThanHours(24))
-  $likeCount : Number(intValue >= 10) from accumulate(
+  $likeCount : Number(intValue >= 5) from accumulate(
     Like(postId == $post.id),
     count(1)
   )

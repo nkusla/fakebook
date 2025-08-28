@@ -34,11 +34,11 @@ module.exports = {
 				role: 'user',
 			},
 			{
-				name: 'Aljosa',
-				surname: 'Kicanski',
-				username: 'kico123',
-				password: 'kico123',
-				email: 'kico123@gmail.com',
+				name: 'Milos',
+				surname: 'Medic',
+				username: 'meda123',
+				password: 'meda123',
+				email: 'meda123@gmail.com',
 				address: "Grbavica",
 				role: 'user'
 			},
@@ -48,6 +48,33 @@ module.exports = {
 				username: 'deki123',
 				password: 'deki123',
 				email: 'deki123@gmail.com',
+				address: "Detelinara",
+				role: 'user'
+			},
+			{
+				name: 'Dule',
+				surname: 'Dule',
+				username: 'dule123',
+				password: 'dule123',
+				email: 'dule123@gmail.com',
+				address: "Detelinara",
+				role: 'user'
+			},
+			{
+				name: 'Luka',
+				surname: 'Ostojic',
+				username: 'luka123',
+				password: 'luka123',
+				email: 'luka123@gmail.com',
+				address: "Detelinara",
+				role: 'user'
+			},
+			{
+				name: 'Strahinja',
+				surname: 'Djukic',
+				username: 'djuka123',
+				password: 'djuka123',
+				email: 'djuka123@gmail.com',
 				address: "Detelinara",
 				role: 'user'
 			},

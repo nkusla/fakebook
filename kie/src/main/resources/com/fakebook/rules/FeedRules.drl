@@ -41,7 +41,7 @@ when
   )
   not Post(this == $post) from feedPosts
 then
-  $post.setRecommendationTag("From hashtag likes");
+  $post.setRecommendationTag("From hashtag likes you made");
   feedPosts.add($post);
 end
 
@@ -84,11 +84,11 @@ when
   )
   not Post(this == $post) from feedPosts
 then
-  $post.setRecommendationTag("From popular hashtags");
+  $post.setRecommendationTag("From popular hashtags you liked");
   feedPosts.add($post);
 end
 
-rule "Get Popular Non-Friend Posts"
+rule "Get Popular"
   agenda-group "feed"
   salience 60
 when
@@ -100,6 +100,6 @@ when
   )
   not Post(this == $post) from feedPosts
 then
-  $post.setRecommendationTag("From popular non-friend posts");
+  $post.setRecommendationTag("Popular");
   feedPosts.add($post);
 end

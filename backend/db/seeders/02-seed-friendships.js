@@ -6,12 +6,8 @@ module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const friendships = [
 			{
-				username1: 'trksi123',
-				username2: 'kico123',
-			},
-			{
-				username1: 'trksi123',
-				username2: 'cico123',
+				username1: 'zeka123',
+				username2: 'meda123',
 			}
 		];
 
