@@ -58,4 +58,10 @@ public class KieController {
 	public ResponseEntity<List<Object>> getAllFacts() {
 		return ResponseEntity.ok(kieService.getAllFacts());
 	}
+
+	@DeleteMapping("/facts")
+	public ResponseEntity<String> deleteAllFacts() {
+		kieService.deleteAllFacts();
+		return ResponseEntity.ok("All facts deleted successfully");
+	}
 }

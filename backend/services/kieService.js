@@ -10,7 +10,6 @@ class KieService {
 		});
 	}
 
-	// Generic method for executing commands
 	async insertFact(fact, path) {
 		try {
 			const response = await this.axios.post(path, fact);
@@ -77,6 +76,16 @@ class KieService {
 		} catch (error) {
 			console.error('❌ KIE Server Error:', error.response?.data || error.message);
 			return Result.serverError('Failed to retrieve feed');
+		}
+	}
+
+	async deleteAllFacts() {
+		try {
+			const response = await this.axios.delete(`/facts`);
+			return Result.ok(response.data);
+		} catch (error) {
+			console.error('❌ KIE Server Error:', error.response?.data || error.message);
+			return Result.serverError('Failed to delete all facts');
 		}
 	}
 }

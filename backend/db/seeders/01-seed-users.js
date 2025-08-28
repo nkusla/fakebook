@@ -63,6 +63,7 @@ module.exports = {
 		];
 
 		const result = await queryInterface.bulkInsert('Users', users, {});
+		await KieService.deleteAllFacts(); // Clear existing facts before inserting new ones
 
 		for (const user of users) {
 			const result = await KieService.insertUserFact(user);

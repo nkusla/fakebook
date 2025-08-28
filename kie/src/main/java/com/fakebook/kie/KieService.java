@@ -92,4 +92,15 @@ public class KieService {
 		}
 		return facts;
 	}
+
+	public void deleteAllFacts() {
+		List<FactHandle> factHandles = new ArrayList<>(kieSession.getFactHandles());
+		for (FactHandle handle : factHandles) {
+			kieSession.delete(handle);
+		}
+		allPosts.clear();
+		allLikes.clear();
+		currentUser.setUsername("");
+		feedPosts.clear();
+	}
 }
