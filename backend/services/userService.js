@@ -1,5 +1,6 @@
 const { Result, ResultStatus } = require("../utils/result");
-const { User } = require('../models');
+const { User, Post, Friendship } = require('../models');
+const { Op } = require('sequelize');
 const KieService = require('./kieService');
 
 class UserService {
@@ -32,6 +33,34 @@ class UserService {
 			}
 
 			return Result.ok(user);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async isUserNew(username) {
+		try {
+			const user = await User.findOne({ where: { username } });
+			if (!user) {
+				return Result.notFound();
+			}
+
+			const postCount = await Post.count({
+      	where: { authorUsername: username }
+    	});
+
+			const friendCount = await Friendship.count({
+				where: {
+					[Op.or]: [
+						{ username1: username },
+						{ username2: username }
+					]
+				}
+			});
+
+			const isNew = (friendCount === 0 && postCount === 0);
+
+			return Result.ok(isNew);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}

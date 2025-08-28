@@ -48,6 +48,12 @@ public class KieController {
 		return ResponseEntity.ok(feedPosts);
 	}
 
+	@GetMapping("/feed/advanced/{username}")
+	public ResponseEntity<List<Post>> getAdvancedFeedPosts(@PathVariable String username) {
+		List<Post> feedPosts = kieService.getAdvancedFeedPosts(username);
+		return ResponseEntity.ok(feedPosts);
+	}
+
 	@GetMapping("/facts")
 	public ResponseEntity<List<Object>> getAllFacts() {
 		return ResponseEntity.ok(kieService.getAllFacts());

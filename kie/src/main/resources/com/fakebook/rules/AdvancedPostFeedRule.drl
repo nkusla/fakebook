@@ -36,7 +36,7 @@ then
 end
 
 rule "Score Post Similar To Liked Post"
-	agenda-group "feed"
+	agenda-group "advanced-feed"
 	salience 90
 when
 	$like : Like(username == currentUser.getUsername())
@@ -49,7 +49,7 @@ then
 end
 
 rule "Score Post Matching User Preferences"
-	agenda-group "feed"
+	agenda-group "advanced-feed"
 	salience 80
 when
 	$hashtag : Hashtag()

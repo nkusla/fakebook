@@ -33,6 +33,7 @@ class KieService {
 		const postFact = {
 			"id": post.id,
 			"authorUsername": post.authorUsername,
+			"content": post.content,
 			"hashtags": post.hashtags,
 			"createdAt": post.createdAt
 		};
@@ -62,6 +63,16 @@ class KieService {
 	async getFeedPosts(username) {
 		try {
 			const response = await this.axios.get(`/feed/${username}`);
+			return Result.ok(response.data);
+		} catch (error) {
+			console.error('❌ KIE Server Error:', error.response?.data || error.message);
+			return Result.serverError('Failed to retrieve feed');
+		}
+	}
+
+	async getAdvancedFeedPosts(username) {
+		try {
+			const response = await this.axios.get(`/feed/advanced/${username}`);
 			return Result.ok(response.data);
 		} catch (error) {
 			console.error('❌ KIE Server Error:', error.response?.data || error.message);

@@ -1,5 +1,6 @@
 const { Post, User, Like } = require('../models')
 const { Result, ResultStatus } = require('../utils/result');
+const UserService = require('./userService');
 const KieService = require('./kieService');
 
 class PostService {
@@ -42,22 +43,6 @@ class PostService {
 
 			const posts = await Post.findAll({
 				where: { authorUsername },
-				attributes: {
-					include: [
-						[
-							// Sequelize.fn('COUNT', Sequelize.col('Likes.id')) will count likes for each post
-							require('sequelize').fn('COUNT', require('sequelize').col('Likes.postId')),
-							'likeCount'
-						]
-					]
-				},
-				include: [
-					{
-						model: Like,
-						attributes: [],
-					}
-				],
-				group: ['Post.id'],
 				order: [['createdAt', 'DESC']]
 			});
 
@@ -65,7 +50,32 @@ class PostService {
 				return Result.notFound('No posts found');
 			}
 
-			return Result.ok(posts);
+			const postsWithLikes = await Promise.all(
+				posts.map(async post => {
+					const likeResult = await PostService._likeCount(post.id);
+					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
+					return {
+						...post.toJSON(),
+						likeCount
+					};
+				})
+			);
+
+			return Result.ok(postsWithLikes);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async _likeCount(postId) {
+		try {
+			if (!postId) {
+				return Result.fail('Post ID is required');
+			}
+
+			const likeCount = await Like.count({ where: { postId } });
+
+			return Result.ok(likeCount);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}
@@ -102,16 +112,52 @@ class PostService {
 				return Result.fail('Username is required');
 			}
 
-			const feedPosts = await KieService.getFeedPosts(username);
+			const result = await UserService.isUserNew(username);
+			const isNew = result.data;
 
-			if (feedPosts.status === ResultStatus.FAIL) {
-				return feedPosts;
+			const postsResult = isNew
+				? await KieService.getAdvancedFeedPosts(username)
+				: await KieService.getFeedPosts(username);
+
+			if (postsResult.status === ResultStatus.FAIL) {
+				return postsResult;
 			}
 
-			return Result.ok(feedPosts.data);
+			const sortedPosts = isNew
+				? PostService._sortAdvancedFeedPosts(postsResult.data)
+				: PostService._sortFeedPosts(postsResult.data);
+
+			const feedPostsWithLikes = await Promise.all(
+				sortedPosts.map(async p => {
+					const likeResult = await PostService._likeCount(p.id);
+					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
+					return {
+						...p,
+						likeCount
+					};
+				})
+			);
+
+			return Result.ok(feedPostsWithLikes);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}
+	}
+
+	static _sortFeedPosts(feedPosts) {
+		return feedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+	}
+
+	static _sortAdvancedFeedPosts(feedPosts) {
+		return feedPosts
+			.sort((a, b) => {
+				if (b.score !== a.score) {
+					return b.score - a.score;
+				}
+
+				return new Date(b.createdAt) - new Date(a.createdAt);
+			})
+			.slice(0, 20);
 	}
 
 }

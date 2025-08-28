@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Post {
     private int id;
     private String authorUsername;
-    private boolean isFlagged;
+    private String content;
     private LocalDateTime createdAt;
     private List<String> hashtags;
     private boolean isPopular;
@@ -17,10 +17,10 @@ public class Post {
     public Post() {
     }
 
-    public Post(int id, String authorUsername, LocalDateTime createdAt) {
+    public Post(int id, String authorUsername, String content, LocalDateTime createdAt) {
         this.id = id;
         this.authorUsername = authorUsername;
-        this.isFlagged = false;
+        this.content = content;
         this.createdAt = createdAt;
         this.hashtags = new ArrayList<>();
         this.isPopular = false;
@@ -43,12 +43,12 @@ public class Post {
         this.authorUsername = authorUsername;
     }
 
-    public boolean isFlagged() {
-        return isFlagged;
+    public String getContent() {
+        return content;
     }
 
-    public void setFlagged(boolean flagged) {
-        isFlagged = flagged;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
