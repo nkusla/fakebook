@@ -65,6 +65,24 @@ class UserService {
 			return Result.serverError(error.message);
 		}
 	}
+
+	static async getUserProfile(username) {
+		try {
+			const user = await User.findOne({
+				where: { username },
+				attributes: { exclude: ['password', 'role'] }
+			});
+
+			if (!user) {
+				return Result.notFound();
+			}
+
+			return Result.ok(user);
+		}
+		catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
 }
 
 module.exports = UserService;

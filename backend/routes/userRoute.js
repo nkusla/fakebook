@@ -7,6 +7,20 @@ const express = require('express');
 
 const router = express.Router();
 
+router.get('/profile',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const user = req.user;
+		const result = await UserService.getUserProfile(user.username);
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ errors: result.errors });
+		}
+
+		return res.status(200).json(result.data);
+	}
+);
+
 router.post('/register',
 	async (req, res) => {
 		const user = req.body;

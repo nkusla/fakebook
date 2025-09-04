@@ -1,9 +1,17 @@
 <template>
 	<v-app-bar app color="primary" dark>
-		<v-toolbar-title style="cursor: pointer" to="/">FaKebook</v-toolbar-title>
+		<v-toolbar-title style="cursor: pointer" @click="$router.push('/')">FaKebook</v-toolbar-title>
 		<v-spacer />
-		<div v-if="isLoggedIn">
-			<v-btn block prepend-icon="mdi-logout" to="/" @click="logout">
+		<div v-if="isLoggedIn" class="d-flex align-center">
+			<v-btn
+				variant="text"
+				prepend-icon="mdi-account-circle"
+				to="/profile"
+				class="mr-2"
+			>
+				Profile
+			</v-btn>
+			<v-btn variant="text" prepend-icon="mdi-logout" @click="logout">
 				Logout
 			</v-btn>
 		</div>
