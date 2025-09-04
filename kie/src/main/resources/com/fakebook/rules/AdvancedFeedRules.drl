@@ -15,7 +15,7 @@ global List feedPosts;
 
 rule "Reset Score"
 	agenda-group "advanced-feed"
-	salience 100
+	salience 200
 when
 	$post : Post()
 then

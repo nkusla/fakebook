@@ -14,6 +14,31 @@ module.exports = {
 				postId: 12,
 				username: 'zeka123',
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 13,
+				username: 'deki123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 13,
+				username: 'luka123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 13,
+				username: 'meda123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 13,
+				username: 'djuka123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 13,
+				username: 'cico123',
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 

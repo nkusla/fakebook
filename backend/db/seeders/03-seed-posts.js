@@ -88,6 +88,13 @@ module.exports = {
 				content: 'Games 🎲',
 				hashtags: ['game'],
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 13,
+				authorUsername: 'trksi123',
+				content: 'MOTORIIIIIIIII 🏍️',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 
