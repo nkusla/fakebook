@@ -109,6 +109,20 @@ class PostService {
 		}
 	}
 
+	static async _canBeLiked(postId, username) {
+		try {
+			if (!postId || !username) {
+				return Result.fail('Post ID and username are required');
+			}
+
+			const existingLike = await Like.findOne({ where: { postId, username } });
+
+			return Result.ok(!existingLike);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
 	static async getFeedPosts(username) {
 		try {
 			if (!username) {
@@ -134,9 +148,12 @@ class PostService {
 				sortedPosts.map(async p => {
 					const likeResult = await PostService._likeCount(p.id);
 					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
+					const canBeLikedResult = await PostService._canBeLiked(p.id, username);
+					const canBeLiked = canBeLikedResult.status === ResultStatus.OK ? canBeLikedResult.data : false;
 					return {
 						...p,
-						likeCount
+						likeCount,
+						canBeLiked
 					};
 				})
 			);

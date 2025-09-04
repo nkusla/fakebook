@@ -6,84 +6,84 @@ module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const posts = [
 			{
-				id: 0,
+				id: 1,
 				authorUsername: 'meda123',
 				content: 'This is a post by Meda from 🌲',
 				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 1,
+				id: 2,
 				authorUsername: 'meda123',
 				content: 'This is a post by Meda from BIH',
 				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 2,
+				id: 3,
 				authorUsername: 'cico123',
 				content: 'THE BEST SUMMER',
 				hashtags: ['summer'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 3,
+				id: 4,
 				authorUsername: 'cico123',
 				content: 'ON THE BEACH',
 				hashtags: ['summer'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 4,
+				id: 5,
 				authorUsername: 'zeka123',
 				content: 'I like Tesla cars',
 				hashtags: ['car'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 5,
+				id: 6,
 				authorUsername: 'dule123',
 				content: 'I like carting 🏎️',
 				hashtags: ['car'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 6,
+				id: 7,
 				authorUsername: 'deki123',
 				content: 'World of Warcraft ⚔️',
 				hashtags: ['wow'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 7,
+				id: 8,
 				authorUsername: 'deki123',
 				content: 'World of Warcraft 🛡️',
 				hashtags: ['wow'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 8,
+				id: 9,
 				authorUsername: 'luka123',
 				content: 'World of Warcraft 🧙‍♂️',
 				hashtags: ['wow'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 9,
+				id: 10,
 				authorUsername: 'luka123',
 				content: 'Games 🎮',
 				hashtags: ['game'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 10,
+				id: 11,
 				authorUsername: 'djuka123',
 				content: 'Games 🕹️',
 				hashtags: ['game'],
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				id: 11,
+				id: 12,
 				authorUsername: 'djuka123',
 				content: 'Games 🎲',
 				hashtags: ['game'],

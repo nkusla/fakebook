@@ -29,14 +29,26 @@
         <v-chip
           v-if="post.recommendationTag"
           size="small"
+          variant="outlined"
           :color="post.recommendationTag === 'Popular' ? 'orange' : 'primary'"
-          :variant="post.recommendationTag === 'Popular' ? 'flat' : 'outlined'"
         >
           <v-icon
             v-if="post.recommendationTag === 'Popular'"
             start
           >
             mdi-fire
+          </v-icon>
+          <v-icon
+            v-else-if="post.recommendationTag === 'From friends'"
+            start
+          >
+            mdi-account-heart
+          </v-icon>
+          <v-icon
+            v-else
+            start
+          >
+            mdi-lightbulb-on
           </v-icon>
           {{ post.recommendationTag }}
         </v-chip>
@@ -75,9 +87,10 @@
             size="small"
             @click="toggleLike"
             :color="isLiked ? 'red' : 'grey'"
+            :disabled="!post.canBeLiked || isLiked"
           >
             <v-icon>
-              {{ isLiked ? 'mdi-heart' : 'mdi-heart-outline' }}
+              {{ !post.canBeLiked ? 'mdi-heart' : (isLiked ? 'mdi-heart' : 'mdi-heart-outline') }}
             </v-icon>
           </v-btn>
 
@@ -132,12 +145,13 @@ export default {
     },
 
     toggleLike() {
-      this.isLiked = !this.isLiked
-      // Emit event to parent component to handle like logic
-      this.$emit('like-toggled', {
-        postId: this.post.id,
-        isLiked: this.isLiked
-      })
+      if (!this.isLiked && this.post.canBeLiked) {
+        this.isLiked = true
+        // Emit event to parent component to handle like logic
+        this.$emit('like-toggled', {
+          postId: this.post.id,
+        })
+      }
     }
   },
   emits: ['like-toggled']
@@ -145,9 +159,6 @@ export default {
 </script>
 
 <style scoped>
-.popular-post {
-  border-left: 4px solid #ff9800;
-}
 
 .v-card {
   transition: all 0.3s ease;

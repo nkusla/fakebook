@@ -50,11 +50,18 @@ export default {
     }
   },
   methods: {
-    handleLikeToggled(data) {
-      console.log('Like toggled for post:', data.postId, 'Liked:', data.isLiked)
-      // Here you would typically make an API call to update the like status
-      // Example:
-      // this.updatePostLike(data.postId, data.isLiked)
+    async handleLikeToggled(data) {
+      const postId = data.postId
+      try {
+        await axiosInstance.post(`/post/${postId}/like`)
+        const post = this.posts.find(p => p.id === postId)
+        if (post) {
+          post.isLiked = true
+          post.likeCount += 1
+        }
+      } catch (error) {
+        console.error('Error liking post:', error)
+      }
     },
 
     async fetchPosts() {
@@ -71,6 +78,12 @@ export default {
   },
 
   mounted() {
+    const auth = localStorage.getItem('auth')
+    if (!auth) {
+      this.$router.push('/login')
+      return
+    }
+
     this.fetchPosts()
   }
 }

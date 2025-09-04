@@ -6,12 +6,12 @@ module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const likes = [
 			{
-				postId: 2,
+				postId: 3,
 				username: 'zeka123',
 				createdAt: new Date().toISOString().slice(0, 19)
 			},
 			{
-				postId: 11,
+				postId: 12,
 				username: 'zeka123',
 				createdAt: new Date().toISOString().slice(0, 19)
 			}
