@@ -77,7 +77,7 @@ export default {
         this.$router.push("/");
       })
       .catch(error => {
-        this.errorMessage = error.response.data.errors[0].message;
+        this.errorMessage = "Username or password is incorrect.";
       });
     },
     signUp() {
