@@ -42,13 +42,13 @@
             v-else-if="post.recommendationTag === 'From friends'"
             start
           >
-            mdi-account-heart
+            mdi-account
           </v-icon>
           <v-icon
             v-else
             start
           >
-            mdi-lightbulb-on
+            mdi-pound
           </v-icon>
           {{ post.recommendationTag }}
         </v-chip>

@@ -26,46 +26,9 @@ then
   feedPosts.add($post);
 end
 
-rule "Get Posts With Hashtags Liked By User"
-  agenda-group "feed"
-  salience 90
-when
-  $like : Like(username == currentUser.getUsername())
-  $likedPost : Post(id == $like.postId)
-  $hashtagName : String() from $likedPost.getHashtags()
-  $post : Post(getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
-
-  not Friendship(
-    isFriend(currentUser.getUsername()),
-    getFriendOf(currentUser.getUsername()) contains $post.authorUsername
-  )
-  not Post(this == $post) from feedPosts
-then
-  $post.setRecommendationTag("From hashtag likes you made");
-  feedPosts.add($post);
-end
-
-rule "Get User Posts With Their Own Hashtags"
-  agenda-group "feed"
-  salience 80
-when
-  $currentUserPost : Post(authorUsername == currentUser.getUsername())
-  $hashtagName : String() from $currentUserPost.getHashtags()
-  $post : Post(getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
-
-  not Friendship(
-    isFriend(currentUser.getUsername()),
-    getFriendOf(currentUser.getUsername()) contains $post.authorUsername
-  )
-  not Post(this == $post) from feedPosts
-then
-  $post.setRecommendationTag("From hashtags you created");
-  feedPosts.add($post);
-end
-
 rule "Get Popular Hashtag Posts Liked By User"
   agenda-group "feed"
-  salience 70
+  salience 90
 when
   $like : Like(username == currentUser.getUsername())
   $likedPost : Post(id == $like.postId)
@@ -84,6 +47,43 @@ when
   not Post(this == $post) from feedPosts
 then
   $post.setRecommendationTag("From popular hashtags you liked");
+  feedPosts.add($post);
+end
+
+rule "Get Posts With Hashtags Liked By User"
+  agenda-group "feed"
+  salience 80
+when
+  $like : Like(username == currentUser.getUsername())
+  $likedPost : Post(id == $like.postId)
+  $hashtagName : String() from $likedPost.getHashtags()
+  $post : Post(getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
+
+  not Friendship(
+    isFriend(currentUser.getUsername()),
+    getFriendOf(currentUser.getUsername()) contains $post.authorUsername
+  )
+  not Post(this == $post) from feedPosts
+then
+  $post.setRecommendationTag("From hashtags you liked");
+  feedPosts.add($post);
+end
+
+rule "Get User Posts With Their Own Hashtags"
+  agenda-group "feed"
+  salience 70
+when
+  $currentUserPost : Post(authorUsername == currentUser.getUsername())
+  $hashtagName : String() from $currentUserPost.getHashtags()
+  $post : Post(getHashtags() contains $hashtagName, authorUsername != currentUser.getUsername())
+
+  not Friendship(
+    isFriend(currentUser.getUsername()),
+    getFriendOf(currentUser.getUsername()) contains $post.authorUsername
+  )
+  not Post(this == $post) from feedPosts
+then
+  $post.setRecommendationTag("From hashtags you created");
   feedPosts.add($post);
 end
 
