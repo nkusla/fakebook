@@ -100,6 +100,10 @@ module.exports = {
 
 		const result = await queryInterface.bulkInsert('Posts', posts, {});
 
+		await queryInterface.sequelize.query(
+			`SELECT setval('"Posts_id_seq"', (SELECT MAX("id") FROM "Posts"));`
+		);
+
 		for (const post of posts) {
 			const result = await KieService.insertPostFact(post);
 			if (result.status === ResultStatus.FAIL) {

@@ -10,12 +10,14 @@ import LoginView from '../views/LoginView.vue';
 import HomeView from '../views/HomeView.vue';
 import SignUpView from '../views/SignUpView.vue';
 import ProfileView from '../views/ProfileView.vue';
+import CreatePostView from '../views/CreatePostView.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
   { path: '/login', name: 'Login', component: LoginView },
   { path: '/signup', name: 'SignUp', component: SignUpView },
   { path: '/profile', name: 'Profile', component: ProfileView },
+  { path: '/create-post', name: 'CreatePost', component: CreatePostView },
 ];
 
 const router = createRouter({

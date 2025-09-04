@@ -5,6 +5,14 @@
 		<div v-if="isLoggedIn" class="d-flex align-center">
 			<v-btn
 				variant="text"
+				prepend-icon="mdi-plus"
+				to="/create-post"
+				class="mr-2"
+			>
+				Create Post
+			</v-btn>
+			<v-btn
+				variant="text"
 				prepend-icon="mdi-account-circle"
 				to="/profile"
 				class="mr-2"
@@ -24,23 +32,47 @@
 <script>
 export default {
 	name: 'AppNavbar',
+	data() {
+		return {
+			auth: null
+		}
+	},
 	computed: {
-		auth() {
-			try {
-				return JSON.parse(localStorage.getItem('auth'));
-			} catch {
-				return null;
-			}
-		},
 		isLoggedIn() {
 			return !!this.auth;
 		}
 	},
 	methods: {
+		updateAuth() {
+			try {
+				this.auth = JSON.parse(localStorage.getItem('auth'));
+			} catch {
+				this.auth = null;
+			}
+		},
 		logout() {
 			localStorage.removeItem('auth');
+			this.auth = null; // Update reactive data immediately
+
+			// Dispatch custom event for consistency
+			window.dispatchEvent(new Event('auth-changed'));
+
 			this.$router.push('/login');
 		}
+	},
+	mounted() {
+		// Initialize auth state
+		this.updateAuth();
+
+		// Listen for storage changes (in case of login/logout from another tab)
+		window.addEventListener('storage', this.updateAuth);
+
+		// Listen for custom auth-changed event (for same-tab login/logout)
+		window.addEventListener('auth-changed', this.updateAuth);
+	},
+	beforeUnmount() {
+		window.removeEventListener('storage', this.updateAuth);
+		window.removeEventListener('auth-changed', this.updateAuth);
 	}
 };
 </script>

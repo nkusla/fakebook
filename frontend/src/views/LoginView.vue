@@ -74,6 +74,9 @@ export default {
 
 				localStorage.setItem('auth', JSON.stringify(auth));
 
+        // Trigger a custom event to notify the navbar of auth change
+        window.dispatchEvent(new Event('auth-changed'));
+
         this.$router.push("/");
       })
       .catch(error => {
