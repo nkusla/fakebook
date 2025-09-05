@@ -3,6 +3,15 @@ const { Place, Rating } = require('../models');
 
 class PlaceService {
 
+	static async getAllPlaces() {
+		try {
+			const places = await Place.findAll();
+			return Result.ok(places);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
 	static async createPlace(placeData) {
 		try {
 			const { name, country, city, description, hashtag } = placeData;

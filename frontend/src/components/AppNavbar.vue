@@ -16,6 +16,14 @@
 			</v-btn>
 			<v-btn
 				variant="text"
+				prepend-icon="mdi-map-marker"
+				to="/places"
+				class="mr-2"
+			>
+				Places
+			</v-btn>
+			<v-btn
+				variant="text"
 				prepend-icon="mdi-account-circle"
 				to="/profile"
 				class="mr-2"

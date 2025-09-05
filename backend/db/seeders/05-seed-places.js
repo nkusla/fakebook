@@ -26,6 +26,30 @@ module.exports = {
 				city: 'Rome',
 				description: 'An ancient amphitheater located in the center of Rome.',
 				hashtag: 'amphitheater'
+			},
+			{
+				id: 4,
+				name: 'Great Wall of China',
+				country: 'China',
+				city: 'Beijing',
+				description: 'A series of fortifications that stretch across northern China.',
+				hashtag: 'wall'
+			},
+			{
+				id: 5,
+				name: 'Sydney Opera House',
+				country: 'Australia',
+				city: 'Sydney',
+				description: 'A multi-venue performing arts centre in Sydney.',
+				hashtag: 'opera'
+			},
+			{
+				id: 6,
+				name: 'Machu Picchu',
+				country: 'Peru',
+				city: 'Cusco Region',
+				description: 'An ancient Incan city set high in the Andes Mountains.',
+				hashtag: 'inca'
 			}
 		]);
 	},

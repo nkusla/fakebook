@@ -11,6 +11,7 @@ import HomeView from '../views/HomeView.vue';
 import SignUpView from '../views/SignUpView.vue';
 import ProfileView from '../views/ProfileView.vue';
 import CreatePostView from '../views/CreatePostView.vue';
+import PlacesView from '../views/PlacesView.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
@@ -18,6 +19,7 @@ const routes = [
   { path: '/signup', name: 'SignUp', component: SignUpView },
   { path: '/profile', name: 'Profile', component: ProfileView },
   { path: '/create-post', name: 'CreatePost', component: CreatePostView },
+  { path: '/places', name: 'Places', component: PlacesView },
 ];
 
 const router = createRouter({

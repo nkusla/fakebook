@@ -25,6 +25,19 @@ router.post('/',
 	}
 );
 
+router.get('/',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const result = await placeService.getAllPlaces();
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ error: result.errors });
+		}
+
+		return res.status(200).json(result.data);
+	}
+);
+
 router.post('/:id/rating',
 	jwtParser.verifyToken(),
 	async (req, res) => {
