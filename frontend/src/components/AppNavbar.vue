@@ -1,6 +1,9 @@
 <template>
 	<v-app-bar app color="primary" dark>
-		<v-toolbar-title style="cursor: pointer" @click="$router.push('/')">FaKebook</v-toolbar-title>
+		<v-btn class="navbar-title" text @click="goToHome()">
+			<v-img src="@/assets/fakebook-light.png" alt="Fakebook Logo" width="32" height="32" class="navbar-logo"></v-img>
+			<span class="ml-2 font-weight-bold">Fakebook</span>
+		</v-btn>
 		<v-spacer />
 		<div v-if="isLoggedIn" class="d-flex align-center">
 			<v-btn
@@ -43,6 +46,9 @@ export default {
 		}
 	},
 	methods: {
+		goToHome() {
+			this.$router.push('/');
+		},
 		updateAuth() {
 			try {
 				this.auth = JSON.parse(localStorage.getItem('auth'));
