@@ -42,6 +42,12 @@ public class KieController {
 		return ResponseEntity.ok("Like inserted successfully");
 	}
 
+	@PostMapping("/block")
+	public ResponseEntity<String> insertFact(@RequestBody Block block) {
+		kieService.insertFact(block);
+		return ResponseEntity.ok("Block inserted successfully");
+	}
+
 	@GetMapping("/feed/{username}")
 	public ResponseEntity<List<Post>> getFeedPosts(@PathVariable String username) {
 		List<Post> feedPosts = kieService.getFeedPosts(username);

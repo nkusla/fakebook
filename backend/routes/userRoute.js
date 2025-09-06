@@ -61,9 +61,10 @@ router.post("/login",
 router.get('/search',
 	jwtParser.verifyToken(),
 	async (req, res) => {
-		const { username } = req.query;
+		const { usernameQuery } = req.query;
+		const currentUser = req.user;
 
-		const result = await UserService.searchUsers(username);
+		const result = await UserService.searchUsers(usernameQuery, currentUser.username);
 
 		if (result.status === ResultStatus.FAIL) {
 			return res.status(result.code).json({ errors: result.errors });
@@ -78,6 +79,22 @@ router.post('/logout',
 		res.clearCookie('token');
 
 		return res.status(200).json({ message: 'Logout successful!' });
+	}
+);
+
+router.post('/block',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const currentUser = req.user;
+		const { username: blockedUsername } = req.body;
+
+		const result = await UserService.blockUser(currentUser.username, blockedUsername);
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ errors: result.errors });
+		}
+
+		return res.status(200).json({ message: 'User blocked successfully!' });
 	}
 );
 

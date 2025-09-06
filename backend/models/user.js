@@ -30,6 +30,16 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Rating, {
         foreignKey: 'username',
       });
+
+      User.hasMany(models.Block, {
+        foreignKey: 'username',
+        targetKey: 'username',
+      });
+
+      User.hasMany(models.Block, {
+        foreignKey: 'blockedUsername',
+        targetKey: 'username',
+      });
     }
   }
   User.init({

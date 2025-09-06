@@ -79,6 +79,15 @@ module.exports = {
 				role: 'user'
 			},
 			{
+				name: 'Strahinja',
+				surname: 'Galic',
+				username: 'gala123',
+				password: 'gala123',
+				email: 'gala123@gmail.com',
+				address: "Malesici",
+				role: 'user'
+			},
+			{
 				name: 'Nikola',
 				surname: 'Kuslakovic',
 				username: 'kule123',

@@ -1,5 +1,5 @@
 const { Result, ResultStatus } = require("../utils/result");
-const { User, Post, Friendship } = require('../models');
+const { User, Post, Friendship, Block } = require('../models');
 const { Op } = require('sequelize');
 const KieService = require('./kieService');
 
@@ -46,8 +46,8 @@ class UserService {
 			}
 
 			const postCount = await Post.count({
-      	where: { authorUsername: username }
-    	});
+				where: { authorUsername: username }
+			});
 
 			const friendCount = await Friendship.count({
 				where: {
@@ -84,16 +84,23 @@ class UserService {
 		}
 	}
 
-	static async searchUsers(usernameQuery) {
+	static async searchUsers(usernameQuery, currentUsername) {
 		try {
 			if (!usernameQuery || usernameQuery.length < 2) {
 				return Result.fail('Search query must be at least 2 characters', 400);
 			}
 
+			const blockedUsers = await Block.findAll({
+				where: { username: currentUsername },
+				attributes: ['blockedUsername']
+			});
+
+			const blockedUsernames = blockedUsers.map(block => block.blockedUsername);
+
 			const users = await User.findAll({
 				where: {
 					username: {
-						[Op.iLike]: `%${usernameQuery}%`
+						[Op.iLike]: `%${usernameQuery}%`,
 					},
 					role: {
 						[Op.ne]: 'admin'
@@ -103,7 +110,49 @@ class UserService {
 				limit: 10
 			});
 
-			return Result.ok(users);
+			const filteredUsers = users.filter(user => !blockedUsernames.includes(user.username));
+
+			return Result.ok(filteredUsers);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async blockUser(username, blockedUsername) {
+		try {
+			if (username === blockedUsername) {
+				return Result.fail('You cannot block yourself', 400);
+			}
+
+			const user = await User.findOne({ where: { username } });
+			if (!user) {
+				return Result.notFound('User not found');
+			}
+
+			const blockedUser = await User.findOne({ where: { username: blockedUsername } });
+			if (!blockedUser) {
+				return Result.notFound('User to block not found');
+			}
+
+			const existingBlock = await Block.findOne({
+				where: {
+					username,
+					blockedUsername
+				}
+			});
+
+			if (existingBlock) {
+				return Result.fail('User is already blocked', 400);
+			}
+
+			const block = await Block.create({ username, blockedUsername });
+
+			const kieResult = await KieService.insertBlockFact(block);
+			if (kieResult.status === ResultStatus.FAIL) {
+				return kieResult;
+			}
+
+			return Result.ok(null, 200);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}

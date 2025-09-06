@@ -5,6 +5,7 @@ import com.fakebook.model.Post
 import com.fakebook.model.Friendship
 import com.fakebook.model.Hashtag
 import com.fakebook.model.Like
+import com.fakebook.model.Block
 import java.time.LocalDateTime
 import java.util.List
 import java.util.Iterator
@@ -101,4 +102,21 @@ when
 then
   $post.setRecommendationTag("Popular");
   feedPosts.add($post);
+end
+
+rule "Remove Posts From Blocked Users"
+  agenda-group "feed"
+  salience 50
+when
+  $block : Block(username == currentUser.getUsername() || blockedUsername == currentUser.getUsername())
+  $blockedUser : String() from (
+    $block.getUsername().equals(currentUser.getUsername()) ?
+    $block.getBlockedUsername() :
+    $block.getUsername()
+  )
+  $post : Post(authorUsername == $blockedUser)
+
+  Post(this == $post) from feedPosts
+then
+  feedPosts.remove($post);
 end

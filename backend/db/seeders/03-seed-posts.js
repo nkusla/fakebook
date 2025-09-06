@@ -95,6 +95,13 @@ module.exports = {
 				content: 'MOTORIIIIIIIII 🏍️',
 				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 14,
+				authorUsername: 'gala123',
+				content: 'Fallout 5 is coming out soon!',
+				hashtags: ['game'],
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 

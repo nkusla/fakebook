@@ -36,16 +36,16 @@
 		</div>
 
 		<!-- Search Users Dialog -->
-		<v-dialog v-model="searchDialog" max-width="500" persistent>
+		<v-dialog v-model="searchDialog" max-width="700" persistent>
 			<v-card>
-				   <v-card-title class="d-flex align-center">
-					   <v-icon class="mr-2">mdi-account-search</v-icon>
-					   Search Users
-					   <v-spacer></v-spacer>
-					   <v-btn icon variant="text" @click="closeSearch">
-						   <v-icon>mdi-close</v-icon>
-					   </v-btn>
-				   </v-card-title>
+				<v-card-title class="d-flex align-center">
+					<v-icon class="mr-2">mdi-account-search</v-icon>
+					Search Users
+					<v-spacer></v-spacer>
+					<v-btn icon variant="text" @click="closeSearch">
+						<v-icon>mdi-close</v-icon>
+					</v-btn>
+				</v-card-title>
 				<v-card-text>
 					<v-text-field v-model="searchQuery" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
 						density="compact" @keyup.enter="searchUsers" :loading="searchLoading" clearable autofocus>
@@ -68,19 +68,27 @@
 								<v-list-item-title>{{ user.name }} {{ user.surname }}</v-list-item-title>
 								<v-list-item-subtitle>@{{ user.username }}</v-list-item-subtitle>
 								<template v-slot:append>
-									<v-btn color="primary" variant="outlined" @click="addFriend(user.username)"
-										:loading="addingFriend === user.username" :disabled="user.friendship?.areFriends">
-										{{ user.friendship?.areFriends ? 'Friends' : 'Add Friend' }}
-									</v-btn>
+									<div class="d-flex ga-3">
+										<v-btn color="primary" variant="outlined" @click="addFriend(user.username)"
+											:loading="addingFriend === user.username" :disabled="user.friendship?.areFriends">
+											{{ user.friendship?.areFriends ? 'Friends' : 'Add Friend' }}
+										</v-btn>
+										<v-btn color="error" variant="outlined" @click="blockUser(user.username)"
+											:loading="blockingUser === user.username">
+											<v-icon>mdi-account-cancel</v-icon>
+											Block
+										</v-btn>
+									</div>
 								</template>
 							</v-list-item>
 						</v-list>
 					</div>
 
-					   <div v-else-if="searchPerformed && searchQuery && !searchLoading && searchResults.length === 0" class="text-center text-grey mt-4">
-						   <v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
-						   <div class="mt-2">No users found</div>
-					   </div>
+					<div v-else-if="searchPerformed && searchQuery && !searchLoading && searchResults.length === 0"
+						class="text-center text-grey mt-4">
+						<v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
+						<div class="mt-2">No users found</div>
+					</div>
 				</v-card-text>
 			</v-card>
 		</v-dialog>
@@ -94,17 +102,18 @@ import axios from '@/utils/axiosInstance';
 
 export default {
 	name: 'AppNavbar',
-	   data() {
-		   return {
-			   auth: null,
-			   searchDialog: false,
-			   searchQuery: '',
-			   searchResults: [],
-			   searchLoading: false,
-			   addingFriend: null,
-			   searchPerformed: false
-		   }
-	   },
+	data() {
+		return {
+			auth: null,
+			searchDialog: false,
+			searchQuery: '',
+			searchResults: [],
+			searchLoading: false,
+			addingFriend: null,
+			blockingUser: null,
+			searchPerformed: false
+		}
+	},
 	computed: {
 		isLoggedIn() {
 			return !!this.auth;
@@ -140,23 +149,22 @@ export default {
 
 			this.$router.push('/login');
 		},
-		   searchUsers() {
-			   this.searchPerformed = true;
-			   if (!this.searchQuery || this.searchQuery.length < 2) {
-				   this.searchResults = [];
-				   return;
-			   }
+		searchUsers() {
+			this.searchPerformed = true;
+			if (!this.searchQuery || this.searchQuery.length < 2) {
+				this.searchResults = [];
+				return;
+			}
 
-			   this.searchLoading = true;
-			   this.performSearch();
-		   },
+			this.searchLoading = true;
+			this.performSearch();
+		},
 		async performSearch() {
 			try {
 				// Search for users by username
 				const response = await axios.get(`/user/search`, {
-					params: { username: this.searchQuery }
+					params: { usernameQuery: this.searchQuery }
 				});
-
 
 				// Check friendship status for each user
 				const usersWithFriendship = await Promise.all(
@@ -206,19 +214,36 @@ export default {
 				this.addingFriend = null;
 			}
 		},
-		   closeSearch() {
-			   this.searchDialog = false;
-			   this.searchQuery = '';
-			   this.searchResults = [];
-			   this.searchPerformed = false;
-			   this.searchLoading = false;
-			   this.addingFriend = null;
-			   // Blur the input if open for a clean restart
-			   this.$nextTick(() => {
-				   const input = document.querySelector('.v-text-field input');
-				   if (input) input.blur();
-			   });
-		   }
+		async blockUser(username) {
+			this.blockingUser = username;
+			try {
+				await axios.post(
+					`/user/block`,
+					{ username: username }
+				);
+
+				// Remove the blocked user from search results
+				this.searchResults = this.searchResults.filter(user => user.username !== username);
+			} catch (error) {
+				console.error('Error blocking user:', error);
+			} finally {
+				this.blockingUser = null;
+			}
+		},
+		closeSearch() {
+			this.searchDialog = false;
+			this.searchQuery = '';
+			this.searchResults = [];
+			this.searchPerformed = false;
+			this.searchLoading = false;
+			this.addingFriend = null;
+			this.blockingUser = null;
+			// Blur the input if open for a clean restart
+			this.$nextTick(() => {
+				const input = document.querySelector('.v-text-field input');
+				if (input) input.blur();
+			});
+		}
 	},
 	mounted() {
 		// Initialize auth state
