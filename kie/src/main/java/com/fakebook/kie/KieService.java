@@ -11,7 +11,8 @@ import java.util.List;
 
 @Service
 public class KieService {
-	private final KieSession kieSession;
+	private KieSession kieSession;
+	private final KieContainer kieContainer;
 	private final User currentUser;
 	private final List<Post> feedPosts;
 	private final List<Post> allPosts = new ArrayList<>();
@@ -19,29 +20,35 @@ public class KieService {
 
 	public KieService() {
 		KieServices kieServices = KieServices.get();
-		KieContainer kieContainer = kieServices.getKieClasspathContainer();
-		this.kieSession = kieContainer.newKieSession("ksession-rules");
-
-		if (this.kieSession == null) {
-			throw new IllegalStateException("Failed to create KieSession with name ksession-rules");
-		}
+		kieContainer = kieServices.getKieClasspathContainer();
+		kieSession = kieContainer.newKieSession("ksession-rules");
 
 		currentUser = new User("");
 		feedPosts = new ArrayList<>();
 
-		kieSession.setGlobal("currentUser", currentUser);
-		kieSession.setGlobal("feedPosts", feedPosts);
-		kieSession.setGlobal("allPosts", allPosts);
-		kieSession.setGlobal("allLikes", allLikes);
+		refreshSession();
 	}
 
-	private void refreshFacts() {
-		List<Object> objects = new ArrayList<>(this.kieSession.getObjects());
-		for (Object obj : objects) {
-			FactHandle handle = this.kieSession.getFactHandle(obj);
-			this.kieSession.delete(handle);
-			this.kieSession.insert(obj);
-		}
+	private void refreshSession() {
+    List<Object> objects = new ArrayList<>(kieSession.getObjects());
+
+    kieSession.dispose();
+
+    KieSession newKieSession = kieContainer.newKieSession("ksession-rules");
+    if (newKieSession == null) {
+      throw new IllegalStateException("Failed to create KieSession with name ksession-rules");
+    }
+
+    kieSession = newKieSession;
+
+    for (Object obj : objects) {
+      kieSession.insert(obj);
+    }
+
+    kieSession.setGlobal("currentUser", currentUser);
+    kieSession.setGlobal("feedPosts", feedPosts);
+    kieSession.setGlobal("allPosts", allPosts);
+    kieSession.setGlobal("allLikes", allLikes);
 	}
 
 	public void insertFact(Object fact, String agendaGroup) {
@@ -64,23 +71,23 @@ public class KieService {
 	}
 
 	public List<Post> getFeedPosts(String username) {
-		refreshFacts();
+		refreshSession();
 
 		currentUser.setUsername(username);
 		feedPosts.clear();
-		this.kieSession.getAgenda().getAgendaGroup("feed").setFocus();
-		this.kieSession.fireAllRules();
+		kieSession.getAgenda().getAgendaGroup("feed").setFocus();
+		kieSession.fireAllRules();
 
 		return feedPosts;
 	}
 
 	public List<Post> getAdvancedFeedPosts(String username) {
-		refreshFacts();
+		refreshSession();
 
 		currentUser.setUsername(username);
 		feedPosts.clear();
-		this.kieSession.getAgenda().getAgendaGroup("advanced-feed").setFocus();
-		this.kieSession.fireAllRules();
+		kieSession.getAgenda().getAgendaGroup("advanced-feed").setFocus();
+		kieSession.fireAllRules();
 
 		return feedPosts;
 	}
@@ -98,6 +105,7 @@ public class KieService {
 		for (FactHandle handle : factHandles) {
 			kieSession.delete(handle);
 		}
+
 		allPosts.clear();
 		allLikes.clear();
 		currentUser.setUsername("");
