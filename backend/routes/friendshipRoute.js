@@ -6,7 +6,6 @@ const express = require('express');
 
 const router = express.Router();
 
-// Create a new friendship
 router.post('/',
 	jwtParser.verifyToken(),
 	async (req, res) => {
@@ -22,7 +21,6 @@ router.post('/',
 	}
 );
 
-// Get all friends of the authenticated user
 router.get('/',
 	jwtParser.verifyToken(),
 	async (req, res) => {
@@ -38,7 +36,6 @@ router.get('/',
 	}
 );
 
-// Remove a friendship
 router.delete('/:username',
 	jwtParser.verifyToken(),
 	async (req, res) => {
@@ -55,7 +52,6 @@ router.delete('/:username',
 	}
 );
 
-// Check if two users are friends
 router.get('/:username',
 	jwtParser.verifyToken(),
 	async (req, res) => {

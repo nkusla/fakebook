@@ -302,7 +302,6 @@ export default {
         this.loadingRatings = true
         const response = await axiosInstance.get(`/place/${this.place.id}/ratings`)
         this.ratings = response.data
-        console.log(`Fetched ${this.ratings.length} ratings for place: ${this.place.name}`, this.ratings)
       } catch (error) {
         console.error('Error fetching ratings for place:', this.place.name, error)
         this.ratings = []
@@ -339,8 +338,6 @@ export default {
         };
 
         const response = await axiosInstance.post(`/place/${this.place.id}/rating`, ratingData);
-
-        console.log('Rating submitted successfully:', response.data);
 
         // Refresh ratings to show the new rating
         await this.fetchRatings();
