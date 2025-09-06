@@ -83,6 +83,31 @@ class UserService {
 			return Result.serverError(error.message);
 		}
 	}
+
+	static async searchUsers(usernameQuery) {
+		try {
+			if (!usernameQuery || usernameQuery.length < 2) {
+				return Result.fail('Search query must be at least 2 characters', 400);
+			}
+
+			const users = await User.findAll({
+				where: {
+					username: {
+						[Op.iLike]: `%${usernameQuery}%`
+					},
+					role: {
+						[Op.ne]: 'admin'
+					}
+				},
+				attributes: ['username', 'name', 'surname', 'email'],
+				limit: 10
+			});
+
+			return Result.ok(users);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
 }
 
 module.exports = UserService;

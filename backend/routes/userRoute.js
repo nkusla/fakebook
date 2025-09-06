@@ -58,6 +58,21 @@ router.post("/login",
 	}
 );
 
+router.get('/search',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const { username } = req.query;
+
+		const result = await UserService.searchUsers(username);
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ errors: result.errors });
+		}
+
+		return res.status(200).json(result.data);
+	}
+);
+
 router.post('/logout',
 	async (_, res) => {
 		res.clearCookie('token');

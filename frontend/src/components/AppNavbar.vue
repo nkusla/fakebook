@@ -7,38 +7,23 @@
 		<v-spacer />
 		<div v-if="isLoggedIn" class="d-flex align-center">
 			<template v-if="!isAdmin">
-				<v-btn
-					variant="text"
-					prepend-icon="mdi-plus"
-					to="/create-post"
-					class="mr-2"
-				>
+				<!-- User Search Component -->
+				<v-btn variant="text" prepend-icon="mdi-account-search" @click="openSearchDialog" class="mr-2">
+					Find Users
+				</v-btn>
+
+				<v-btn variant="text" prepend-icon="mdi-plus" to="/create-post" class="mr-2">
 					Create Post
 				</v-btn>
-				<v-btn
-					variant="text"
-					prepend-icon="mdi-map-marker"
-					to="/places"
-					class="mr-2"
-				>
+				<v-btn variant="text" prepend-icon="mdi-map-marker" to="/places" class="mr-2">
 					Places
 				</v-btn>
-				<v-btn
-					variant="text"
-					prepend-icon="mdi-account-circle"
-					to="/profile"
-					class="mr-2"
-				>
+				<v-btn variant="text" prepend-icon="mdi-account-circle" to="/profile" class="mr-2">
 					Profile
 				</v-btn>
 			</template>
 			<template v-else>
-				<v-btn
-					variant="text"
-					prepend-icon="mdi-map-marker-plus"
-					to="/create-place"
-					class="mr-2"
-				>
+				<v-btn variant="text" prepend-icon="mdi-map-marker-plus" to="/create-place" class="mr-2">
 					Create Place
 				</v-btn>
 			</template>
@@ -49,15 +34,79 @@
 		<div v-else>
 			<v-btn size="large" prepend-icon="mdi-login" to="/login">Login</v-btn>
 		</div>
+
+		<!-- Search Users Dialog -->
+		<v-dialog v-model="searchDialog" max-width="500" persistent>
+			<v-card>
+				<v-card-title class="d-flex align-center">
+					<v-icon class="mr-2">mdi-account-search</v-icon>
+					Search Users
+					<v-spacer></v-spacer>
+					<v-btn icon variant="text" @click="closeSearch">
+						<v-icon>mdi-close</v-icon>
+					</v-btn>
+				</v-card-title>
+				<v-card-text>
+					<v-text-field v-model="searchQuery" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
+						density="compact" @keyup.enter="searchUsers" :loading="searchLoading" clearable autofocus>
+						<template v-slot:append-inner>
+							<v-btn icon size="small" @click="searchUsers" :disabled="!searchQuery || searchQuery.length < 2"
+								:loading="searchLoading">
+								<v-icon>mdi-magnify</v-icon>
+							</v-btn>
+						</template>
+					</v-text-field>
+
+					<div v-if="searchResults.length > 0" class="mt-4">
+						<v-list>
+							<v-list-item v-for="user in searchResults" :key="user.username" class="px-0">
+								<template v-slot:prepend>
+									<v-avatar color="primary" size="default">
+										<span class="text-white">{{ user.name[0] }}{{ user.surname[0] }}</span>
+									</v-avatar>
+								</template>
+								<v-list-item-title>{{ user.name }} {{ user.surname }}</v-list-item-title>
+								<v-list-item-subtitle>@{{ user.username }}</v-list-item-subtitle>
+								<template v-slot:append>
+									<v-btn color="primary" variant="outlined" @click="addFriend(user.username)"
+										:loading="addingFriend === user.username" :disabled="user.friendship?.areFriends">
+										{{ user.friendship?.areFriends ? 'Friends' : 'Add Friend' }}
+									</v-btn>
+								</template>
+							</v-list-item>
+						</v-list>
+					</div>
+
+					<div v-else-if="searchQuery && !searchLoading" class="text-center text-grey mt-4">
+						<v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
+						<div class="mt-2">No users found</div>
+					</div>
+
+					<div v-else-if="!searchQuery" class="text-center text-grey mt-4">
+						<v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
+						<div class="mt-2">Enter a username and click search</div>
+					</div>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
+
+
 	</v-app-bar>
 </template>
 
 <script>
+import axios from '@/utils/axiosInstance';
+
 export default {
 	name: 'AppNavbar',
 	data() {
 		return {
-			auth: null
+			auth: null,
+			searchDialog: false,
+			searchQuery: '',
+			searchResults: [],
+			searchLoading: false,
+			addingFriend: null
 		}
 	},
 	computed: {
@@ -76,6 +125,9 @@ export default {
 				this.$router.push('/');
 			}
 		},
+		openSearchDialog() {
+			this.searchDialog = true;
+		},
 		updateAuth() {
 			try {
 				this.auth = JSON.parse(localStorage.getItem('auth'));
@@ -91,6 +143,76 @@ export default {
 			window.dispatchEvent(new Event('auth-changed'));
 
 			this.$router.push('/login');
+		},
+		searchUsers() {
+			if (!this.searchQuery || this.searchQuery.length < 2) {
+				this.searchResults = [];
+				return;
+			}
+
+			this.searchLoading = true;
+			this.performSearch();
+		},
+		async performSearch() {
+			try {
+				// Search for users by username
+				const response = await axios.get(`/user/search`, {
+					params: { username: this.searchQuery }
+				});
+
+
+				// Check friendship status for each user
+				const usersWithFriendship = await Promise.all(
+					response.data.map(async (user) => {
+						try {
+							const friendshipResponse = await axios.get(
+								`/friendship/${user.username}`
+							);
+							return {
+								...user,
+								friendship: friendshipResponse.data
+							};
+						} catch (error) {
+							return {
+								...user,
+								friendship: { areFriends: false }
+							};
+						}
+					})
+				);
+
+				this.searchResults = usersWithFriendship.filter(user =>
+					user.username !== this.auth.username
+				);
+			} catch (error) {
+				console.error('Error searching users:', error);
+			} finally {
+				this.searchLoading = false;
+			}
+		},
+		async addFriend(username) {
+			this.addingFriend = username;
+			try {
+				await axios.post(
+					`/friendship`,
+					{ username2: username }
+				);
+
+				// Update the friendship status in search results
+				const userIndex = this.searchResults.findIndex(user => user.username === username);
+				if (userIndex !== -1) {
+					this.searchResults[userIndex].friendship.areFriends = true;
+				}
+			} catch (error) {
+				console.error('Error adding friend:', error);
+			} finally {
+				this.addingFriend = null;
+			}
+		},
+		closeSearch() {
+			this.searchDialog = false;
+			this.searchQuery = '';
+			this.searchResults = [];
 		}
 	},
 	mounted() {

@@ -1,11 +1,11 @@
 const { Friendship, User } = require('../models');
 const { Result, ResultStatus } = require('../utils/result');
 const { Op } = require('sequelize');
+const KieService = require('./kieService');
 
 class FriendshipService {
 	static async createFriendship(username1, username2) {
 		try {
-			// Validation
 			if (!username2) {
 				return Result.fail('Username2 is required');
 			}
@@ -21,8 +21,10 @@ class FriendshipService {
 
 			const existingFriendship = await Friendship.findOne({
 				where: {
-					username1: username1 < username2 ? username1 : username2,
-					username2: username1 < username2 ? username2 : username1
+					[Op.or]: [
+						{ username1, username2 },
+						{ username1: username2, username2: username1 }
+					]
 				}
 			});
 
@@ -30,10 +32,10 @@ class FriendshipService {
 				return Result.fail('Friendship already exists');
 			}
 
-			// Create friendship (always store with lexicographically smaller username first)
+			// Create friendship (store as entered)
 			const friendship = await Friendship.create({
-				username1: username1 < username2 ? username1 : username2,
-				username2: username1 < username2 ? username2 : username1
+				username1,
+				username2
 			});
 
 			const kieResult = KieService.insertFriendshipFact(friendship);
@@ -91,11 +93,13 @@ class FriendshipService {
 				return new Result(ResultStatus.ERROR, null, 'Username2 is required');
 			}
 
-			// Find and delete the friendship
+			// Find and delete the friendship (regardless of order)
 			const deletedCount = await Friendship.destroy({
 				where: {
-					username1: username1 < username2 ? username1 : username2,
-					username2: username1 < username2 ? username2 : username1
+					[Op.or]: [
+						{ username1, username2 },
+						{ username1: username2, username2: username1 }
+					]
 				}
 			});
 
@@ -113,8 +117,10 @@ class FriendshipService {
 		try {
 			const friendship = await Friendship.findOne({
 				where: {
-					username1: username1 < username2 ? username1 : username2,
-					username2: username1 < username2 ? username2 : username1
+					[Op.or]: [
+						{ username1, username2 },
+						{ username1: username2, username2: username1 }
+					]
 				}
 			});
 
