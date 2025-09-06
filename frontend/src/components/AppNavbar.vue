@@ -38,14 +38,14 @@
 		<!-- Search Users Dialog -->
 		<v-dialog v-model="searchDialog" max-width="500" persistent>
 			<v-card>
-				<v-card-title class="d-flex align-center">
-					<v-icon class="mr-2">mdi-account-search</v-icon>
-					Search Users
-					<v-spacer></v-spacer>
-					<v-btn icon variant="text" @click="closeSearch">
-						<v-icon>mdi-close</v-icon>
-					</v-btn>
-				</v-card-title>
+				   <v-card-title class="d-flex align-center">
+					   <v-icon class="mr-2">mdi-account-search</v-icon>
+					   Search Users
+					   <v-spacer></v-spacer>
+					   <v-btn icon variant="text" @click="closeSearch">
+						   <v-icon>mdi-close</v-icon>
+					   </v-btn>
+				   </v-card-title>
 				<v-card-text>
 					<v-text-field v-model="searchQuery" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined"
 						density="compact" @keyup.enter="searchUsers" :loading="searchLoading" clearable autofocus>
@@ -77,15 +77,10 @@
 						</v-list>
 					</div>
 
-					<div v-else-if="searchQuery && !searchLoading" class="text-center text-grey mt-4">
-						<v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
-						<div class="mt-2">No users found</div>
-					</div>
-
-					<div v-else-if="!searchQuery" class="text-center text-grey mt-4">
-						<v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
-						<div class="mt-2">Enter a username and click search</div>
-					</div>
+					   <div v-else-if="searchPerformed && searchQuery && !searchLoading && searchResults.length === 0" class="text-center text-grey mt-4">
+						   <v-icon size="48" color="grey-lighten-1">mdi-account-search</v-icon>
+						   <div class="mt-2">No users found</div>
+					   </div>
 				</v-card-text>
 			</v-card>
 		</v-dialog>
@@ -99,16 +94,17 @@ import axios from '@/utils/axiosInstance';
 
 export default {
 	name: 'AppNavbar',
-	data() {
-		return {
-			auth: null,
-			searchDialog: false,
-			searchQuery: '',
-			searchResults: [],
-			searchLoading: false,
-			addingFriend: null
-		}
-	},
+	   data() {
+		   return {
+			   auth: null,
+			   searchDialog: false,
+			   searchQuery: '',
+			   searchResults: [],
+			   searchLoading: false,
+			   addingFriend: null,
+			   searchPerformed: false
+		   }
+	   },
 	computed: {
 		isLoggedIn() {
 			return !!this.auth;
@@ -144,15 +140,16 @@ export default {
 
 			this.$router.push('/login');
 		},
-		searchUsers() {
-			if (!this.searchQuery || this.searchQuery.length < 2) {
-				this.searchResults = [];
-				return;
-			}
+		   searchUsers() {
+			   this.searchPerformed = true;
+			   if (!this.searchQuery || this.searchQuery.length < 2) {
+				   this.searchResults = [];
+				   return;
+			   }
 
-			this.searchLoading = true;
-			this.performSearch();
-		},
+			   this.searchLoading = true;
+			   this.performSearch();
+		   },
 		async performSearch() {
 			try {
 				// Search for users by username
@@ -209,11 +206,19 @@ export default {
 				this.addingFriend = null;
 			}
 		},
-		closeSearch() {
-			this.searchDialog = false;
-			this.searchQuery = '';
-			this.searchResults = [];
-		}
+		   closeSearch() {
+			   this.searchDialog = false;
+			   this.searchQuery = '';
+			   this.searchResults = [];
+			   this.searchPerformed = false;
+			   this.searchLoading = false;
+			   this.addingFriend = null;
+			   // Blur the input if open for a clean restart
+			   this.$nextTick(() => {
+				   const input = document.querySelector('.v-text-field input');
+				   if (input) input.blur();
+			   });
+		   }
 	},
 	mounted() {
 		// Initialize auth state
