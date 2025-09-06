@@ -69,6 +69,16 @@ class KieService {
 		return this.insertFact(blockFact, '/block');
 	}
 
+	async insertReportFact(report) {
+		const reportFact = {
+			"postId": report.postId,
+			"username": report.username,
+			"createdAt": report.createdAt
+		};
+
+		return this.insertFact(reportFact, '/report');
+	}
+
 	async getFeedPosts(username) {
 		try {
 			const response = await this.axios.get(`/feed/${username}`);

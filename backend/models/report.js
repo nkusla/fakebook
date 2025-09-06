@@ -1,53 +1,35 @@
 'use strict';
-const {
-	Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class Post extends Model {
+	class Report extends Model {
 		/**
 		 * Helper method for defining associations.
 		 * This method is not a part of Sequelize lifecycle.
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			// define association here
-			Post.belongsTo(models.User, {
-				foreignKey: 'authorUsername',
+			// User who reported
+			Report.belongsTo(models.User, {
+				foreignKey: 'username',
 				targetKey: 'username',
 			});
-
-			Post.hasMany(models.Like, {
+			// Post being reported
+			Report.belongsTo(models.Post, {
 				foreignKey: 'postId',
-				sourceKey: 'id',
-			});
-
-			Post.hasMany(models.Report, {
-				foreignKey: 'postId',
-				sourceKey: 'id',
+				targetKey: 'id',
 			});
 		}
 	}
-	Post.init({
-		id: {
+	Report.init({
+		postId: {
 			type: DataTypes.INTEGER,
-			autoIncrement: true,
+			allowNull: false,
 			primaryKey: true,
 		},
-		authorUsername: {
+		username: {
 			type: DataTypes.STRING,
 			allowNull: false,
-		},
-		content: {
-			type: DataTypes.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: true,
-				len: [1, 1000]
-			}
-		},
-		hashtags: {
-			type: DataTypes.ARRAY(DataTypes.STRING),
-			allowNull: true,
+			primaryKey: true,
 		},
 		createdAt: {
 			type: DataTypes.STRING,
@@ -57,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 	}, {
 		sequelize,
 		timestamps: false,
-		modelName: 'Post',
+		modelName: 'Report',
 	});
-	return Post;
+	return Report;
 };

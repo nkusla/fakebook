@@ -1,20 +1,17 @@
 package com.fakebook.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Block implements Serializable {
+public class Block {
 	private String username;
 	private String blockedUsername;
-	private String createdAt;
+	private LocalDateTime createdAt;
 
 	public Block() {
-		this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 	}
 
-	public Block(String username, String blockedUsername, String createdAt) {
+	public Block(String username, String blockedUsername, LocalDateTime createdAt) {
 		this.username = username;
 		this.blockedUsername = blockedUsername;
 		this.createdAt = createdAt;
@@ -36,13 +33,17 @@ public class Block implements Serializable {
 		this.blockedUsername = blockedUsername;
 	}
 
-	public String getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public boolean isNewerThanHours(int hours) {
+    return createdAt.isAfter(LocalDateTime.now().minusHours(hours));
+  }
 
 	@Override
 	public boolean equals(Object o) {

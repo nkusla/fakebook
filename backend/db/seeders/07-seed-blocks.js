@@ -9,7 +9,22 @@ module.exports = {
 				username: "zeka123",
 				blockedUsername: "gala123",
 				createdAt: new Date().toISOString().slice(0, 19),
-			}
+			},
+			{
+				username: "dule123",
+				blockedUsername: "gala123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "djuka123",
+				blockedUsername: "gala123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "cico123",
+				blockedUsername: "gala123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
 		]
 
 		const result = await queryInterface.bulkInsert("Blocks", blocks, {});

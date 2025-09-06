@@ -48,6 +48,12 @@ public class KieController {
 		return ResponseEntity.ok("Block inserted successfully");
 	}
 
+	@PostMapping("/report")
+	public ResponseEntity<String> insertFact(@RequestBody Report report) {
+		kieService.insertFact(report);
+		return ResponseEntity.ok("Report inserted successfully");
+	}
+
 	@GetMapping("/feed/{username}")
 	public ResponseEntity<List<Post>> getFeedPosts(@PathVariable String username) {
 		List<Post> feedPosts = kieService.getFeedPosts(username);
@@ -58,6 +64,12 @@ public class KieController {
 	public ResponseEntity<List<Post>> getAdvancedFeedPosts(@PathVariable String username) {
 		List<Post> feedPosts = kieService.getAdvancedFeedPosts(username);
 		return ResponseEntity.ok(feedPosts);
+	}
+
+	@GetMapping("/suspensions")
+	public ResponseEntity<List<Suspend>> getUserSuspensions() {
+		List<Suspend> suspensions = kieService.getUserSuspensions();
+		return ResponseEntity.ok(suspensions);
 	}
 
 	@GetMapping("/facts")

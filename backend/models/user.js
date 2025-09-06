@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'blockedUsername',
         targetKey: 'username',
       });
+
+      User.hasMany(models.Report, {
+        foreignKey: 'username',
+        targetKey: 'username',
+      });
     }
   }
   User.init({

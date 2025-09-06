@@ -92,6 +92,22 @@ public class KieService {
 		return feedPosts;
 	}
 
+	public List<Suspend> getUserSuspensions() {
+		refreshSession();
+		kieSession.getAgenda().getAgendaGroup("suspend").setFocus();
+		kieSession.fireAllRules();
+
+		List<Suspend> suspensions = new ArrayList<>();
+
+		for (Object obj : kieSession.getObjects()) {
+			if (obj instanceof Suspend) {
+				suspensions.add((Suspend) obj);
+			}
+		}
+
+		return suspensions;
+	}
+
 	public List<Object> getAllFacts() {
 		List<Object> facts = new ArrayList<>();
 		for (Object obj : kieSession.getObjects()) {

@@ -89,10 +89,6 @@ public class Post {
         return createdAt.isAfter(LocalDateTime.now().minusHours(hours));
     }
 
-    public boolean isOlderThanHours(int hours) {
-        return createdAt.isBefore(LocalDateTime.now().minusHours(hours));
-    }
-
     public boolean hasHashtag(String hashtag) {
         return hashtags.contains(hashtag);
     }

@@ -1,0 +1,32 @@
+package com.fakebook.rules
+
+import com.fakebook.model.User
+import com.fakebook.model.Block
+import com.fakebook.model.Report
+import com.fakebook.model.Suspend
+import java.time.LocalDateTime
+import java.util.List
+import java.util.Iterator
+
+rule "Remove old suspends"
+  agenda-group "suspend"
+  salience 100
+when
+  $suspend : Suspend(isExpired())
+then
+  delete($suspend);
+end
+
+rule "More then 4 blocks in last 24 hours."
+	agenda-group "suspend"
+	salience 90
+when
+	$user : User($username : username)
+	$blockCount : Number(intValue >= 4) from accumulate(
+		Block(blockedUsername == $username, isNewerThanHours(24)),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "POST_BAN", 24, "User has been blocked by 4 different users in the last 24 hours."));
+end
