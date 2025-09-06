@@ -52,13 +52,13 @@ module.exports = {
 				hashtag: 'inca'
 			}
 		]);
-	},
-
-	down: async (queryInterface, Sequelize) => {
-		await queryInterface.bulkDelete('Places', null, {});
 
 		await queryInterface.sequelize.query(
 			`SELECT setval('"Places_id_seq"', (SELECT MAX("id") FROM "Places"));`
 		);
+	},
+
+	down: async (queryInterface, Sequelize) => {
+		await queryInterface.bulkDelete('Places', null, {});
 	}
 };

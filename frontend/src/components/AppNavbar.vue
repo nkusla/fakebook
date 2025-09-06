@@ -6,30 +6,42 @@
 		</v-btn>
 		<v-spacer />
 		<div v-if="isLoggedIn" class="d-flex align-center">
-			<v-btn
-				variant="text"
-				prepend-icon="mdi-plus"
-				to="/create-post"
-				class="mr-2"
-			>
-				Create Post
-			</v-btn>
-			<v-btn
-				variant="text"
-				prepend-icon="mdi-map-marker"
-				to="/places"
-				class="mr-2"
-			>
-				Places
-			</v-btn>
-			<v-btn
-				variant="text"
-				prepend-icon="mdi-account-circle"
-				to="/profile"
-				class="mr-2"
-			>
-				Profile
-			</v-btn>
+			<template v-if="!isAdmin">
+				<v-btn
+					variant="text"
+					prepend-icon="mdi-plus"
+					to="/create-post"
+					class="mr-2"
+				>
+					Create Post
+				</v-btn>
+				<v-btn
+					variant="text"
+					prepend-icon="mdi-map-marker"
+					to="/places"
+					class="mr-2"
+				>
+					Places
+				</v-btn>
+				<v-btn
+					variant="text"
+					prepend-icon="mdi-account-circle"
+					to="/profile"
+					class="mr-2"
+				>
+					Profile
+				</v-btn>
+			</template>
+			<template v-else>
+				<v-btn
+					variant="text"
+					prepend-icon="mdi-map-marker-plus"
+					to="/create-place"
+					class="mr-2"
+				>
+					Create Place
+				</v-btn>
+			</template>
 			<v-btn variant="text" prepend-icon="mdi-logout" @click="logout">
 				Logout
 			</v-btn>
@@ -51,11 +63,18 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return !!this.auth;
+		},
+		isAdmin() {
+			return this.auth && this.auth.role === 'admin';
 		}
 	},
 	methods: {
 		goToHome() {
-			this.$router.push('/');
+			if (this.isAdmin) {
+				this.$router.push('/places');
+			} else {
+				this.$router.push('/');
+			}
 		},
 		updateAuth() {
 			try {

@@ -26,6 +26,7 @@ class PlaceService {
 
 			return Result.ok(place, 201);
 		} catch (error) {
+			console.error('Error creating place:', error);
 			return Result.serverError(error.message);
 		}
 	}

@@ -38,7 +38,7 @@
     <!-- Place Actions -->
     <v-card-actions class="px-4 pb-4">
       <v-btn
-        v-if="!hasCurrentUserRated"
+        v-if="!hasCurrentUserRated && !isAdmin"
         color="primary"
         variant="outlined"
         prepend-icon="mdi-star"
@@ -276,6 +276,9 @@ export default {
     hasCurrentUserRated() {
       if (!this.currentUser || !this.ratings.length) return false
       return this.ratings.some(rating => rating.username === this.currentUser.username)
+    },
+    isAdmin() {
+      return this.currentUser && this.currentUser.role === 'admin';
     },
     averageRating() {
       if (!this.ratings.length) return null

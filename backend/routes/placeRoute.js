@@ -15,6 +15,9 @@ router.post('/',
 		}
 
 		const placeData = req.body;
+
+		console.log('Creating place with data:', placeData);
+
 		const result = await placeService.createPlace(placeData);
 
 		if (result.status === ResultStatus.FAIL) {

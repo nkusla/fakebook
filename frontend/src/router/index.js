@@ -12,14 +12,16 @@ import SignUpView from '../views/SignUpView.vue';
 import ProfileView from '../views/ProfileView.vue';
 import CreatePostView from '../views/CreatePostView.vue';
 import PlacesView from '../views/PlacesView.vue';
+import CreatePlaceView from '../views/CreatePlaceView.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: HomeView },
+  { path: '/', name: 'Home', component: HomeView, meta: { requiresAuth: true, restrictedForAdmin: true } },
   { path: '/login', name: 'Login', component: LoginView },
   { path: '/signup', name: 'SignUp', component: SignUpView },
-  { path: '/profile', name: 'Profile', component: ProfileView },
-  { path: '/create-post', name: 'CreatePost', component: CreatePostView },
-  { path: '/places', name: 'Places', component: PlacesView },
+  { path: '/profile', name: 'Profile', component: ProfileView, meta: { requiresAuth: true, restrictedForAdmin: true } },
+  { path: '/create-post', name: 'CreatePost', component: CreatePostView, meta: { requiresAuth: true, restrictedForAdmin: true } },
+  { path: '/places', name: 'Places', component: PlacesView, meta: { requiresAuth: true } },
+  { path: '/create-place', name: 'CreatePlace', component: CreatePlaceView, meta: { requiresAuth: true, requiresAdmin: true } },
 ];
 
 const router = createRouter({
@@ -36,13 +38,33 @@ router.beforeEach((to, from, next) => {
     return next('/login');
   }
 
+  // Check if the route requires admin access
+  if (to.meta.requiresAdmin && userRole !== 'admin') {
+    return next('/places');
+  }
+
   // Check if the route has specific role requirements
   if (to.meta.role && !to.meta.role.includes(userRole)) {
     return next('/');
   }
 
+  // Admin restrictions: admins can only access places and create-place
+  if (userRole === 'admin') {
+    if (to.meta.restrictedForAdmin) {
+      return next('/places');
+    }
+    // If admin tries to go to home page, redirect to places
+    if (to.path === '/') {
+      return next('/places');
+    }
+  }
+
   // Prevent logged-in users from accessing login and signup pages
   if (userRole && (to.path === '/login' || to.path === '/signup')) {
+    // For admin users, redirect to places instead of home
+    if (userRole === 'admin') {
+      return next('/places');
+    }
     return next('/');
   }
 
