@@ -18,7 +18,7 @@
             </span>
           </v-avatar>
           <div>
-            <div class="font-weight-bold">{{ post.authorUsername }}</div>
+            <div class="font-weight-bold">@{{ post.authorUsername }}</div>
             <div class="text-caption text-grey">
               {{ formatDate(post.createdAt) }}
             </div>
