@@ -7,7 +7,27 @@ module.exports = {
     const reports = [
       {
         postId: 3,
-        username: 'cico123',
+        username: 'deki123',
+        createdAt: new Date().toISOString().slice(0, 19)
+      },
+      {
+        postId: 3,
+        username: 'dule123',
+        createdAt: new Date().toISOString().slice(0, 19)
+      },
+      {
+        postId: 3,
+        username: 'luka123',
+        createdAt: new Date().toISOString().slice(0, 19)
+      },
+      {
+        postId: 3,
+        username: 'meda123',
+        createdAt: new Date().toISOString().slice(0, 19)
+      },
+      {
+        postId: 3,
+        username: 'djuka123',
         createdAt: new Date().toISOString().slice(0, 19)
       },
       {

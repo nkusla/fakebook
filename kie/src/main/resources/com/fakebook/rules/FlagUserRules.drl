@@ -17,9 +17,87 @@ then
   delete($suspend);
 end
 
-rule "More then 4 blocks in last 24 hours."
+rule "More then 10 blocks in last 7 days."
 	agenda-group "suspend"
 	salience 90
+when
+	$user : User($username : username)
+	$blockCount : Number(intValue >= 10) from accumulate(
+		Block(blockedUsername == $username, isNewerThanHours(168)),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "PERMANENT_BAN", -1, "User has been blocked by 10 different users in the last 7 days."));
+end
+
+rule "More then 10 post reports in last 7 days."
+	agenda-group "suspend"
+	salience 80
+when
+	$user : User($username : username)
+	$reportCount : Number(intValue >= 10) from accumulate(
+		$report : Report(isNewerThanHours(24)) and
+		$reportedPost : Post(id == $report.postId, authorUsername == $username),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "PERMANENT_BAN", -1, "User has been reported for posts 10 times in the last 7 days."));
+end
+
+rule "More then 2 blocks in 72 hours and more then 4 reports in 24 hours."
+	agenda-group "suspend"
+	salience 70
+when
+	$user : User($username : username)
+	$blockCount : Number(intValue >= 2) from accumulate(
+		Block(blockedUsername == $username, isNewerThanHours(72)),
+		count(1)
+	)
+	$reportCount : Number(intValue >= 4) from accumulate(
+		$report : Report(isNewerThanHours(24)) and
+		$reportedPost : Post(id == $report.postId, authorUsername == $username),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "LOGIN_BAN", 72, "User has been blocked by 2 different users in the last 72 hours and reported for posts 4 times in the last 24 hours."));
+end
+
+rule "More then 8 post reports in last 72 hours."
+	agenda-group "suspend"
+	salience 65
+when
+	$user : User($username : username)
+	$reportCount : Number(intValue >= 8) from accumulate(
+		$report : Report(isNewerThanHours(72)) and
+		$reportedPost : Post(id == $report.postId, authorUsername == $username),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "POST_BAN", 72, "User has been reported for posts 8 times in the last 72 hours."));
+end
+
+rule "More then 5 post reports in last 24 hours."
+	agenda-group "suspend"
+	salience 60
+when
+	$user : User($username : username)
+	$reportCount : Number(intValue >= 5) from accumulate(
+		$report : Report(isNewerThanHours(24)) and
+		$reportedPost : Post(id == $report.postId, authorUsername == $username),
+		count(1)
+	)
+	not Suspend(username == $username)
+then
+	insert(new Suspend($username, "POST_BAN", 24, "User has been reported for posts 5 times in the last 24 hours."));
+end
+
+rule "More then 4 blocks in last 24 hours."
+	agenda-group "suspend"
+	salience 50
 when
 	$user : User($username : username)
 	$blockCount : Number(intValue >= 4) from accumulate(

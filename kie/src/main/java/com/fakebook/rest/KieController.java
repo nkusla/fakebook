@@ -66,7 +66,7 @@ public class KieController {
 		return ResponseEntity.ok(feedPosts);
 	}
 
-	@GetMapping("/suspensions")
+	@GetMapping("/suspend")
 	public ResponseEntity<List<Suspend>> getUserSuspensions() {
 		List<Suspend> suspensions = kieService.getUserSuspensions();
 		return ResponseEntity.ok(suspensions);

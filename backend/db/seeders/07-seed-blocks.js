@@ -6,7 +6,7 @@ module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const blocks = [
 			{
-				username: "zeka123",
+				username: "meda123",
 				blockedUsername: "gala123",
 				createdAt: new Date().toISOString().slice(0, 19),
 			},

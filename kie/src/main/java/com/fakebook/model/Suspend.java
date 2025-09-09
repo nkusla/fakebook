@@ -1,5 +1,6 @@
 package com.fakebook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,6 +22,12 @@ public class Suspend {
 		this.suspendDuration = suspendDuration;
 		this.reason = reason;
 		this.createdAt = LocalDateTime.now();
+
+		if (suspendDuration <= 0) {
+			this.expiresAt = null; // never expires
+			return;
+		}
+
 		this.expiresAt = LocalDateTime.now().plusHours(suspendDuration);
 	}
 
@@ -74,6 +81,10 @@ public class Suspend {
 
 	@JsonIgnore
 	public boolean isExpired() {
+		if (expiresAt == null) {
+			return false; // never expires
+		}
+
 		return LocalDateTime.now().isAfter(expiresAt);
 	}
 

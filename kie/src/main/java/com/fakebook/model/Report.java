@@ -2,16 +2,17 @@
 package com.fakebook.model;
 
 import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Report {
 	private int postId;
 	private String username;
-	private String createdAt;
+	private LocalDateTime createdAt;
 
 	public Report() {
 	}
 
-	public Report(int postId, String username, String createdAt) {
+	public Report(int postId, String username, LocalDateTime createdAt) {
 		this.postId = postId;
 		this.username = username;
 		this.createdAt = createdAt;
@@ -33,12 +34,16 @@ public class Report {
 		this.username = username;
 	}
 
-	public String getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public boolean isNewerThanHours(int hours) {
+		return createdAt.isAfter(LocalDateTime.now().minusHours(hours));
 	}
 
 	@Override
