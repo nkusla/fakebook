@@ -73,9 +73,8 @@ router.post('/:id/report',
 	async (req, res) => {
 		const postId = req.params.id;
 		const reporterUsername = req.user.username;
-		const { reason } = req.body;
 
-		const result = await postService.reportPost(postId, reporterUsername, reason);
+		const result = await postService.reportPost(postId, reporterUsername);
 
 		if (result.status === ResultStatus.FAIL) {
 			return res.status(result.code).json({ error: result.errors });

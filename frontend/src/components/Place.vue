@@ -136,15 +136,15 @@
                     color="amber"
                     density="compact"
                     readonly
-                    size="small"
+                    size="default"
                   ></v-rating>
-                  <span class="ml-2 text-body-2">{{ rating.rating }}/5</span>
+                  <span class="ml-2 text-body-1">{{ rating.rating }}/5</span>
                 </div>
                 <div v-if="rating.hashtag" class="mt-2">
                   <v-chip
                     color="primary"
                     variant="outlined"
-                    size="x-small"
+                    size="default"
                     prepend-icon="mdi-pound"
                   >
                     {{ rating.hashtag }}

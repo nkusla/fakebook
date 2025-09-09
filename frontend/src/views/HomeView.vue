@@ -20,6 +20,7 @@
             :key="post.id"
             :post="post"
             @like-toggled="handleLikeToggled"
+            @post-reported="handlePostReported"
           />
         </div>
 
@@ -61,6 +62,16 @@ export default {
         }
       } catch (error) {
         console.error('Error liking post:', error)
+      }
+    },
+
+    async handlePostReported(data) {
+      const postId = data.postId
+      try {
+        await axiosInstance.post(`/post/${postId}/report`)
+        console.log('Post reported successfully')
+      } catch (error) {
+        console.error('Error reporting post:', error)
       }
     },
 
