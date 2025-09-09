@@ -1,4 +1,4 @@
-const { Post, User, Like } = require('../models')
+const { Post, User, Like, Report } = require('../models')
 const { Result, ResultStatus } = require('../utils/result');
 const UserService = require('./userService');
 const KieService = require('./kieService');
@@ -148,17 +148,74 @@ class PostService {
 				sortedPosts.map(async p => {
 					const likeResult = await PostService._likeCount(p.id);
 					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
+
 					const canBeLikedResult = await PostService._canBeLiked(p.id, username);
 					const canBeLiked = canBeLikedResult.status === ResultStatus.OK ? canBeLikedResult.data : false;
+
+					const canBeReportedResult = await PostService._canBeReported(p.id, username);
+					const canBeReported = canBeReportedResult.status === ResultStatus.OK ? canBeReportedResult.data : false;
+
 					return {
 						...p,
 						likeCount,
-						canBeLiked
+						canBeLiked,
+						canBeReported
 					};
 				})
 			);
 
 			return Result.ok(feedPostsWithLikes);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async reportPost(postId, username) {
+		try {
+			if (!postId || !username) {
+				return Result.fail('Post ID and reporter username are required');
+			}
+
+			const post = await Post.findByPk(postId);
+			if (!post) {
+				return Result.notFound('Post not found');
+			}
+
+			const reporter = await User.findOne({ where: { username } });
+			if (!reporter) {
+				return Result.notFound('Reporting user not found');
+			}
+
+			const existingReport = await Report.findOne({ where: { postId, username } });
+			if (existingReport) {
+				return Result.fail('You have already reported this post');
+			}
+
+			const report = await Report.create({ postId, username });
+
+			const kieResult = await KieService.insertReportFact(report);
+			if (kieResult.status === ResultStatus.FAIL) {
+				return kieResult;
+			}
+
+			return Result.ok(null, 200);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async _canBeReported(postId, username) {
+		try {
+			if (!postId || !username) {
+				return Result.fail('Post ID and username are required');
+			}
+
+			const existingReport = await Report.findOne({ where: { postId, username } });
+			if (existingReport) {
+				return Result.ok(false);
+			}
+
+			return Result.ok(true);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}

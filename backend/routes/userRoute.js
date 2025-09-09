@@ -98,4 +98,23 @@ router.post('/block',
 	}
 );
 
+router.get('/suspend',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const user = req.user;
+
+		if(user.role !== 'admin') {
+			return res.status(403).json({ error: 'Forbidden: Admins only' });
+		}
+
+		const result = await UserService.getUserSuspensions();
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ errors: result.errors });
+		}
+
+		return res.status(200).json(result.data);
+	}
+);
+
 module.exports = router;

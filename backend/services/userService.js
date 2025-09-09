@@ -157,6 +157,10 @@ class UserService {
 			return Result.serverError(error.message);
 		}
 	}
+
+	static async getUserSuspensions() {
+		return KieService.getUserSuspensions();
+	}
 }
 
 module.exports = UserService;

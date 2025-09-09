@@ -68,4 +68,21 @@ router.get('/feed',
 	}
 );
 
+router.post('/:id/report',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const postId = req.params.id;
+		const reporterUsername = req.user.username;
+		const { reason } = req.body;
+
+		const result = await postService.reportPost(postId, reporterUsername, reason);
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ error: result.errors });
+		}
+
+		return res.status(201).json(result.data);
+	}
+);
+
 module.exports = router;

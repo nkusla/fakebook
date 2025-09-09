@@ -108,6 +108,16 @@ class KieService {
 			return Result.serverError('Failed to delete all facts');
 		}
 	}
+
+	async getUserSuspensions() {
+		try {
+			const response = await this.axios.get(`/suspend`);
+			return Result.ok(response.data);
+		} catch (error) {
+			console.error('❌ KIE Server Error:', error.response?.data || error.message);
+			return Result.serverError('Failed to retrieve user suspensions');
+		}
+	}
 }
 
 module.exports = new KieService();
