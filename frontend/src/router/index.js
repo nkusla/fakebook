@@ -13,6 +13,7 @@ import ProfileView from '../views/ProfileView.vue';
 import CreatePostView from '../views/CreatePostView.vue';
 import PlacesView from '../views/PlacesView.vue';
 import CreatePlaceView from '../views/CreatePlaceView.vue';
+import FlaggedUsersView from '../views/FlaggedUsersView.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView, meta: { requiresAuth: true, restrictedForAdmin: true } },
@@ -22,6 +23,7 @@ const routes = [
   { path: '/create-post', name: 'CreatePost', component: CreatePostView, meta: { requiresAuth: true, restrictedForAdmin: true } },
   { path: '/places', name: 'Places', component: PlacesView, meta: { requiresAuth: true } },
   { path: '/create-place', name: 'CreatePlace', component: CreatePlaceView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/flagged-users', name: 'FlaggedUsers', component: FlaggedUsersView, meta: { requiresAuth: true, requiresAdmin: true } },
 ];
 
 const router = createRouter({

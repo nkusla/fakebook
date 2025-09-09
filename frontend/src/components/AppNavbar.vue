@@ -26,6 +26,9 @@
 				<v-btn variant="text" prepend-icon="mdi-map-marker-plus" to="/create-place" class="mr-2">
 					Create Place
 				</v-btn>
+				<v-btn variant="text" prepend-icon="mdi-account-alert" to="/flagged-users" class="mr-2">
+					Flagged Users
+				</v-btn>
 			</template>
 			<v-btn variant="text" prepend-icon="mdi-logout" @click="logout">
 				Logout
