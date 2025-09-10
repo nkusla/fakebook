@@ -22,7 +22,6 @@ module.exports = {
 				email: 'zeka123@gmail.com',
 				address: "Telep",
 				role: 'user',
-
 			},
 			{
 				name: 'Milos',
@@ -79,12 +78,30 @@ module.exports = {
 				role: 'user'
 			},
 			{
+				name: 'Veljko',
+				surname: 'Vulin',
+				username: 'veljko123',
+				password: 'veljko123',
+				email: 'veljko123@gmail.com',
+				address: "Detelinara",
+				role: 'user'
+			},
+			{
 				name: 'Strahinja',
 				surname: 'Galic',
 				username: 'gala123',
 				password: 'gala123',
 				email: 'gala123@gmail.com',
 				address: "Malesici",
+				role: 'user'
+			},
+			{
+				name: 'Mihajlo',
+				surname: 'Sremac',
+				username: 'sremac123',
+				password: 'sremac123',
+				email: 'sremac123@gmail.com',
+				address: "Futog",
 				role: 'user'
 			},
 			{

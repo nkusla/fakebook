@@ -1,6 +1,7 @@
 const { Result, ResultStatus } = require('../utils/result');
 const jwtParser = require('../utils/jwtParser');
 const postService = require('../services/postService');
+const userService = require('../services/userService');
 
 const express = require('express');
 
@@ -11,6 +12,18 @@ router.post('/',
 	async (req, res) => {
 		const { content, hashtags } = req.body;
 		const authorUsername = req.user.username;
+
+		const suspensionResult = await userService.checkUserSuspension(authorUsername);
+
+		if (suspensionResult.status === ResultStatus.FAIL) {
+			return res.status(suspensionResult.code).json({ error: suspensionResult.errors });
+		}
+
+		const suspension = suspensionResult.data;
+
+		if (suspension) {
+			return res.status(403).json(suspension);
+		}
 
 		const result = await postService.createPost({ authorUsername, content, hashtags });
 

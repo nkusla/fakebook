@@ -9,7 +9,7 @@
 						<v-spacer></v-spacer>
 						<v-btn
 							color="primary"
-							@click="fetchSuspensions"
+							@click="triggerSuspensions"
 							:loading="loading"
 							prepend-icon="mdi-refresh"
 						>
@@ -85,16 +85,24 @@ export default {
 		};
 	},
 	methods: {
-		async fetchSuspensions() {
+		async triggerSuspensions() {
 			this.loading = true;
+			try {
+				const response = await axios.put('/user/suspend');
+				this.suspensions = response.data;
+			} catch (error) {
+				console.error('Error fetching suspensions:', error);
+			} finally {
+				this.loading = false;
+			}
+		},
+		async fetchSuspensions() {
 			try {
 				const response = await axios.get('/user/suspend');
 				this.suspensions = response.data;
 			} catch (error) {
 				console.error('Error fetching suspensions:', error);
-				// You could add a snackbar notification here for better UX
-			} finally {
-				this.loading = false;
+				return [];
 			}
 		},
 		formatSuspendType(type) {
@@ -102,9 +110,11 @@ export default {
 		},
 		getSuspendTypeColor(type) {
 			switch (type) {
-				case 'POST_BAN':
+				case 'PERMANENT_BAN':
+					return 'black';
+				case 'LOGIN_BAN':
 					return 'error';
-				case 'ACCOUNT_BAN':
+				case 'POST_BAN':
 					return 'warning';
 				default:
 					return 'info';

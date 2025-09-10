@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { Result, ResultStatus } = require('./result');
+const UserService = require('../services/userService');
 
 exports.generateToken = (user) => {
 	const payload = {
@@ -30,6 +31,17 @@ exports.verifyToken = (role = null) => (req, res, next) => {
 	const tokenUser = result.data;
 	if (role && role !== tokenUser.role) {
 		return res.status(403).json({ message: 'Forbidden' });
+	}
+
+	const supensionResult = UserService.checkUserSuspension(tokenUser.username);
+	if (supensionResult.status === ResultStatus.FAIL) {
+		return res.status(supensionResult.code).json({ message: supensionResult.errors });
+	}
+
+	const suspension = supensionResult.data;
+	if (suspension && (suspension.suspendType === 'PERMANENT_BAN' || suspension.suspendType === 'LOGIN_BAN')) {
+		res.clearCookie('token');
+		return res.status(403).json(suspension);
 	}
 
 	req.user = tokenUser;

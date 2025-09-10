@@ -39,6 +39,17 @@ router.post("/login",
 		const { username, password } = req.body;
 		const result = await UserService.login(username, password);
 
+		const suspenResult = await UserService.checkUserSuspension(username);
+		if (suspenResult.status === ResultStatus.FAIL) {
+			return res.status(suspenResult.code).json({ errors: suspenResult.errors });
+		}
+
+		const suspension = suspenResult.data;
+
+		if (suspension && (suspension.suspendType === 'LOGIN_BAN' || suspension.suspendType === 'PERMANENT_BAN')) {
+			return res.status(403).json(suspension);
+		}
+
 		if (result.status === ResultStatus.FAIL) {
 			return res.status(result.code).json({ errors: result.errors });
 		}
@@ -95,6 +106,25 @@ router.post('/block',
 		}
 
 		return res.status(200).json({ message: 'User blocked successfully!' });
+	}
+);
+
+router.put('/suspend',
+	jwtParser.verifyToken(),
+	async (req, res) => {
+		const user = req.user;
+
+		if(user.role !== 'admin') {
+			return res.status(403).json({ error: 'Forbidden: Admins only' });
+		}
+
+		const result = await UserService.triggerUserSuspensions();
+
+		if (result.status === ResultStatus.FAIL) {
+			return res.status(result.code).json({ errors: result.errors });
+		}
+
+		return res.status(200).json(result.data);
 	}
 );
 

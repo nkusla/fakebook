@@ -80,6 +80,16 @@ export default {
         this.$router.push("/");
       })
       .catch(error => {
+        if(error.status === 403) {
+          if(error.data && error.data.suspendType === 'LOGIN_BAN') {
+            this.errorMessage = `Your account is suspended until ${new Date(error.data.expiresAt).toLocaleString()}`;
+            return;
+          }
+
+          this.errorMessage = "Your account is permanently suspended.";
+          return;
+        }
+
         this.errorMessage = "Username or password is incorrect.";
       });
     },

@@ -1,9 +1,10 @@
 const { Result, ResultStatus } = require("../utils/result");
-const { User, Post, Friendship, Block } = require('../models');
+const { User, Post, Friendship, Block, Suspension } = require('../models');
 const { Op } = require('sequelize');
 const KieService = require('./kieService');
 
 class UserService {
+
 	static async register(user, role) {
 		try {
 			user.role = role;
@@ -158,8 +159,57 @@ class UserService {
 		}
 	}
 
+	static async triggerUserSuspensions() {
+		try {
+			const result = await KieService.getUserSuspensions();
+			if (result.status === ResultStatus.FAIL) {
+				return result;
+			}
+
+			const suspensions = result.data;
+
+			for (const suspension of suspensions) {
+				await Suspension.upsert({
+					username: suspension.username,
+					suspendType: suspension.suspendType,
+					suspendDuration: suspension.suspendDuration,
+					reason: suspension.reason,
+					expiresAt: suspension.expiresAt
+				});
+			}
+
+			return result;
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
 	static async getUserSuspensions() {
-		return KieService.getUserSuspensions();
+		try {
+			const suspensions = await Suspension.findAll();
+			return Result.ok(suspensions);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
+	}
+
+	static async checkUserSuspension(username) {
+		try {
+			const suspension = await Suspension.findByPk(username);
+
+			if (suspension) {
+				const now = new Date();
+				// remove suspension if expired
+				if (suspension.suspendType !== 'PERMANENT_BAN' && suspension.expiresAt <= now) {
+					await Suspension.destroy({ where: { username } });
+					return Result.ok(null);
+				}
+			}
+
+			return Result.ok(suspension);
+		} catch (error) {
+			return Result.serverError(error.message);
+		}
 	}
 }
 

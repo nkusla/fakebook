@@ -46,15 +46,10 @@
                 </v-chip>
               </div>
 
-              <!-- Error Message -->
-              <v-alert
-                v-if="errorMessage"
-                type="error"
-                variant="outlined"
-                class="mb-4"
-              >
+              <!-- Error Message Snackbar -->
+              <v-snackbar v-model="errorSnackbar" :timeout="snackbarTimeout" color="error">
                 {{ errorMessage }}
-              </v-alert>
+              </v-snackbar>
             </v-form>
 
             <!-- Form Actions -->
@@ -98,9 +93,10 @@ export default {
       content: '',
       hashtagInput: '',
       errorMessage: '',
-      snackbar: false,
-      snackbarMessage: '',
-      snackbarTimeout: 2500,
+  snackbar: false,
+  snackbarMessage: '',
+  snackbarTimeout: 2500,
+  errorSnackbar: false,
       contentRules: [
         v => !!v || 'Content is required',
         v => (v && v.length >= 1) || 'Content must be at least 1 character',
@@ -143,8 +139,13 @@ export default {
         }, this.snackbarTimeout)
 
       } catch (error) {
-        console.error('Error creating post:', error)
-        this.errorMessage = error.response?.data?.error || 'Failed to create post. Please try again.'
+        if(error.status == 403) {
+          const suspension = error.response?.data
+          this.errorMessage = `You are currently suspended from posting. Until ${suspension.expiresAt}`
+        } else {
+          this.errorMessage = error.response?.data?.error || 'Failed to create post. Please try again.'
+        }
+        this.errorSnackbar = true;
       } finally {
         this.loading = false
       }
@@ -154,6 +155,7 @@ export default {
       this.content = ''
       this.hashtagInput = ''
       this.errorMessage = ''
+      this.errorSnackbar = false
       this.valid = false
     }
   },

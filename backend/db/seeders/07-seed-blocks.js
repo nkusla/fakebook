@@ -25,6 +25,51 @@ module.exports = {
 				blockedUsername: "gala123",
 				createdAt: new Date().toISOString().slice(0, 19),
 			},
+			{
+				username: "gala123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "meda123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "dule123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "djuka123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "cico123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "trksi123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "deki123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "luka123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "sremac123",
+				blockedUsername: "veljko123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
 		]
 
 		const result = await queryInterface.bulkInsert("Blocks", blocks, {});
