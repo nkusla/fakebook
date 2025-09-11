@@ -13,7 +13,7 @@ router.post('/',
 		const { content, hashtags } = req.body;
 		const authorUsername = req.user.username;
 
-		const suspensionResult = await userService.checkUserSuspension(authorUsername);
+		const suspensionResult = await userService.getUserSuspension(authorUsername);
 
 		if (suspensionResult.status === ResultStatus.FAIL) {
 			return res.status(suspensionResult.code).json({ error: suspensionResult.errors });

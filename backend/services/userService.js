@@ -184,18 +184,18 @@ class UserService {
 		}
 	}
 
-	static async getUserSuspensions() {
+	static async getAllUserSuspensions() {
 		try {
-			const suspensions = await Suspension.findAll();
+			const suspensions = await Suspension.findAll({ raw: true });
 			return Result.ok(suspensions);
 		} catch (error) {
 			return Result.serverError(error.message);
 		}
 	}
 
-	static async checkUserSuspension(username) {
+	static async getUserSuspension(username) {
 		try {
-			const suspension = await Suspension.findByPk(username);
+			const suspension = await Suspension.findByPk(username, { raw: true });
 
 			if (suspension) {
 				const now = new Date();

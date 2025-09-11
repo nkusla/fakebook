@@ -16,7 +16,7 @@ exports.generateToken = (user) => {
 	);
 }
 
-exports.verifyToken = (role = null) => (req, res, next) => {
+exports.verifyToken = (role = null) => async (req, res, next) => {
 	const token = req.cookies ? req.cookies.token : null;
 
 	if (!token) {
@@ -33,13 +33,13 @@ exports.verifyToken = (role = null) => (req, res, next) => {
 		return res.status(403).json({ message: 'Forbidden' });
 	}
 
-	const supensionResult = UserService.checkUserSuspension(tokenUser.username);
+	const supensionResult = await UserService.getUserSuspension(tokenUser.username);
 	if (supensionResult.status === ResultStatus.FAIL) {
 		return res.status(supensionResult.code).json({ message: supensionResult.errors });
 	}
 
 	const suspension = supensionResult.data;
-	if (suspension && (suspension.suspendType === 'PERMANENT_BAN' || suspension.suspendType === 'LOGIN_BAN')) {
+	if (suspension && suspension.suspendType !== 'POST_BAN') {
 		res.clearCookie('token');
 		return res.status(403).json(suspension);
 	}

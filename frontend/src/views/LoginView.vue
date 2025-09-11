@@ -80,13 +80,14 @@ export default {
         this.$router.push("/");
       })
       .catch(error => {
-        if(error.status === 403) {
-          if(error.data && error.data.suspendType === 'LOGIN_BAN') {
-            this.errorMessage = `Your account is suspended until ${new Date(error.data.expiresAt).toLocaleString()}`;
+        if (error.status === 403) {
+
+          if (error.response?.data?.suspendType === 'PERMANENT_BAN') {
+            this.errorMessage = "Your account has been permanently suspended.";
             return;
           }
 
-          this.errorMessage = "Your account is permanently suspended.";
+          this.errorMessage = `Your account has been suspended until ${new Date(error.response?.data?.expiresAt).toLocaleString()}.`;
           return;
         }
 

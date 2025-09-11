@@ -39,14 +39,15 @@ router.post("/login",
 		const { username, password } = req.body;
 		const result = await UserService.login(username, password);
 
-		const suspenResult = await UserService.checkUserSuspension(username);
+		const suspenResult = await UserService.getUserSuspension(username);
+
 		if (suspenResult.status === ResultStatus.FAIL) {
 			return res.status(suspenResult.code).json({ errors: suspenResult.errors });
 		}
 
 		const suspension = suspenResult.data;
 
-		if (suspension && (suspension.suspendType === 'LOGIN_BAN' || suspension.suspendType === 'PERMANENT_BAN')) {
+		if (suspension && suspension.suspendType !== 'POST_BAN') {
 			return res.status(403).json(suspension);
 		}
 
@@ -137,7 +138,7 @@ router.get('/suspend',
 			return res.status(403).json({ error: 'Forbidden: Admins only' });
 		}
 
-		const result = await UserService.getUserSuspensions();
+		const result = await UserService.getAllUserSuspensions();
 
 		if (result.status === ResultStatus.FAIL) {
 			return res.status(result.code).json({ errors: result.errors });

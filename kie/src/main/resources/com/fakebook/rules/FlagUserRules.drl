@@ -67,7 +67,7 @@ end
 
 rule "More then 8 post reports in last 72 hours."
 	agenda-group "suspend"
-	salience 65
+	salience 60
 when
 	$user : User($username : username)
 	$reportCount : Number(intValue >= 8) from accumulate(
@@ -82,7 +82,7 @@ end
 
 rule "More then 5 post reports in last 24 hours."
 	agenda-group "suspend"
-	salience 60
+	salience 50
 when
 	$user : User($username : username)
 	$reportCount : Number(intValue >= 5) from accumulate(
@@ -97,7 +97,7 @@ end
 
 rule "More then 4 blocks in last 24 hours."
 	agenda-group "suspend"
-	salience 50
+	salience 40
 when
 	$user : User($username : username)
 	$blockCount : Number(intValue >= 4) from accumulate(

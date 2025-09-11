@@ -1,5 +1,6 @@
 "use strict";
 const KieService = require('../../services/kieService');
+const { blockUser } = require('../../services/userService');
 const { Result, ResultStatus } = require('../../utils/result');
 
 module.exports = {
@@ -70,6 +71,16 @@ module.exports = {
 				blockedUsername: "veljko123",
 				createdAt: new Date().toISOString().slice(0, 19),
 			},
+			{
+				username: "deki123",
+				blockedUsername: "sremac123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			},
+			{
+				username: "luka123",
+				blockedUsername: "sremac123",
+				createdAt: new Date().toISOString().slice(0, 19),
+			}
 		]
 
 		const result = await queryInterface.bulkInsert("Blocks", blocks, {});

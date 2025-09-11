@@ -12,7 +12,7 @@ axiosInstance.interceptors.response.use(
 		if (error.response.status === 401) {
 			redirectToLogin();
 		} else if (error.response.status === 403) {
-			if (error.response?.data?.suspendType === 'LOGIN_BAN' || error.response?.data?.suspendType === 'PERMANENT_BAN') {
+			if (error.response?.data?.suspendType !== 'POST_BAN') {
 				redirectToLogin();
 			}
 		}
@@ -20,6 +20,10 @@ axiosInstance.interceptors.response.use(
 		return Promise.reject(error);
 	}
 );
+
+function formatDate(dateString) {
+	return new Date(dateString).toLocaleString();
+}
 
 function redirectToLogin() {
 	localStorage.removeItem('auth');

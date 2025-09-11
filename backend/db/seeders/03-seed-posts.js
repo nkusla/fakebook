@@ -102,6 +102,34 @@ module.exports = {
 				content: 'Fallout 5 is coming out soon!',
 				hashtags: ['game'],
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 15,
+				authorUsername: "sremac123",
+				content: 'I love biking!',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 16,
+				authorUsername: "sremac123",
+				content: 'I love biking! 2',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 17,
+				authorUsername: "sremac123",
+				content: 'I love biking! 3',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 18,
+				authorUsername: "sremac123",
+				content: 'I love biking! 4',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 

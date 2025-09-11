@@ -120,3 +120,14 @@ when
 then
   feedPosts.remove($post);
 end
+
+rule "Remove Old Posts"
+  agenda-group "feed"
+  salience 40
+when
+  $post : Post(!isNewerThanHours(72))
+
+  Post(this == $post) from feedPosts
+then
+  feedPosts.remove($post);
+end
