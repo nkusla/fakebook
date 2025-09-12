@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/kie")
+@RequestMapping("/")
 public class KieController {
 	@Autowired
 	private KieService kieService;
