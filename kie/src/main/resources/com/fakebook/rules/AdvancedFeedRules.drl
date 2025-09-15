@@ -30,6 +30,8 @@ when
 	eval(Similarity.pearsonCorrelation(currentUser, $otherUser, allPosts, allLikes) >= 0.5)
 	$like : Like(username == $otherUser.getUsername())
 	$post : Post(id == $like.postId, authorUsername != currentUser.getUsername())
+
+	not Post(this == $post) from feedPosts
 then
 	$post.addScore(1);
   feedPosts.add($post);
@@ -43,6 +45,8 @@ when
 	$likedPost : Post(id == $like.postId)
 	$post : Post(this != $likedPost, authorUsername != currentUser.getUsername())
 	eval(Similarity.likerOverlap($likedPost, $post, allLikes) >= 0.7)
+
+	not Post(this == $post) from feedPosts
 then
 	$post.addScore(1);
   feedPosts.add($post);
@@ -58,6 +62,8 @@ when
 	$recentLikes : List(size >= 3) from collect (
 		Like(username == currentUser.getUsername(), isNewerThanHours(72), postId == $id)
 	)
+
+	not Post(this == $post) from feedPosts
 then
 	$post.addScore(1);
   feedPosts.add($post);

@@ -39,6 +39,26 @@ module.exports = {
 				postId: 13,
 				username: 'cico123',
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 19,
+				username: 'sone123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 19,
+				username: 'luka123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 19,
+				username: 'deki123',
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				postId: 19,
+				username: 'meda123',
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 

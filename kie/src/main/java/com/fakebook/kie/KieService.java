@@ -11,8 +11,10 @@ import java.util.List;
 
 @Service
 public class KieService {
+
 	private KieSession kieSession;
 	private final KieContainer kieContainer;
+
 	private final User currentUser;
 	private final List<Post> feedPosts;
 	private final List<Post> allPosts = new ArrayList<>();
@@ -52,6 +54,12 @@ public class KieService {
 	}
 
 	public void insertFact(Object fact, String agendaGroup) {
+		if (fact instanceof Post) {
+			allPosts.add((Post) fact);
+		} else if (fact instanceof Like) {
+			allLikes.add((Like) fact);
+		}
+
 		if (!agendaGroup.isEmpty()) {
 			kieSession.getAgenda().getAgendaGroup(agendaGroup).setFocus();
 		}
@@ -61,12 +69,6 @@ public class KieService {
 	}
 
 	public void insertFact(Object fact) {
-		if (fact instanceof Post) {
-			allPosts.add((Post) fact);
-		} else if (fact instanceof Like) {
-			allLikes.add((Like) fact);
-		}
-
 		insertFact(fact, "");
 	}
 

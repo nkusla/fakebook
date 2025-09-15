@@ -130,6 +130,13 @@ module.exports = {
 				content: 'I love biking! 4',
 				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 19,
+				authorUsername: "sremac123",
+				content: 'Volim burek i masnu pitu sa kajmakom',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
 
