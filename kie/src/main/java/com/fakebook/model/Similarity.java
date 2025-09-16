@@ -39,8 +39,9 @@ public class Similarity {
 		}
 
 		double denominator = Math.sqrt(denomX * denomY);
-		if (denominator == 0) return 0;
-			return numerator / denominator;
+		double result = denominator != 0 ? numerator / denominator : 0.0;
+
+		return result;
 	}
 
 	public static double likerOverlap(Post postA, Post postB, List<Like> allLikes) {

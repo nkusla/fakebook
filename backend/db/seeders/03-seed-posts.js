@@ -134,8 +134,99 @@ module.exports = {
 			{
 				id: 19,
 				authorUsername: "sremac123",
-				content: 'Volim burek i masnu pitu sa kajmakom',
+				content: 'Vozim brzo ta kolaaaaa brrrrr',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 20,
+				authorUsername: "sremac123",
+				content: 'Volim kolace',
 				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 21,
+				authorUsername: "sremac123",
+				content: 'Volim sladoled',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 22,
+				authorUsername: "deki123",
+				content: 'BUREEEEEK',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 23,
+				authorUsername: "deki123",
+				content: 'SIRNICAAAAA',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 24,
+				authorUsername: "deki123",
+				content: 'KIFLICE',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 25,
+				authorUsername: "deki123",
+				content: 'KEBAB SVI VOLE',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 26,
+				authorUsername: "sremac123",
+				content: 'GIROS JE NAJBOLJIIII',
+				hashtags: ['food'],
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 27,
+				authorUsername: "cico123",
+				content: 'Letnji raspust je najbolji',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 28,
+				authorUsername: "cico123",
+				content: 'Letnji raspust je najbolji 2',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 29,
+				authorUsername: "cico123",
+				content: 'Letnji raspust je najbolji 3',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 30,
+				authorUsername: "cico123",
+				content: 'Letnji raspust je najbolji 4',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 31,
+				authorUsername: "gala123",
+				content: 'Bosna u srcu',
+				hashtags: null,
+				createdAt: new Date().toISOString().slice(0, 19)
+			},
+			{
+				id: 32,
+				authorUsername: "gala123",
+				content: 'Malesici najbolji',
+				hashtags: null,
 				createdAt: new Date().toISOString().slice(0, 19)
 			}
 		];
