@@ -4,6 +4,7 @@ import com.fakebook.model.Similarity
 import com.fakebook.model.User
 import com.fakebook.model.Post
 import com.fakebook.model.Like
+import com.fakebook.model.Block
 import com.fakebook.model.Hashtag
 import java.time.LocalDateTime
 import java.util.List
@@ -71,4 +72,21 @@ when
 	not Post(this == $post) from feedPosts
 then
 	feedPosts.add($post);
+end
+
+rule "Filter Out Posts From Blocked Users"
+  agenda-group "advanced-feed"
+  salience 5
+when
+  $block : Block(username == currentUser.getUsername() || blockedUsername == currentUser.getUsername())
+  $blockedUser : String() from (
+    $block.getUsername().equals(currentUser.getUsername()) ?
+    $block.getBlockedUsername() :
+    $block.getUsername()
+  )
+  $post : Post(authorUsername == $blockedUser)
+
+  Post(this == $post) from feedPosts
+then
+  feedPosts.remove($post);
 end
