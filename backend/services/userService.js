@@ -108,7 +108,6 @@ class UserService {
 					}
 				},
 				attributes: ['username', 'name', 'surname', 'email'],
-				limit: 10
 			});
 
 			const filteredUsers = users.filter(user => !blockedUsernames.includes(user.username));

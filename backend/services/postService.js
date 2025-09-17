@@ -140,12 +140,10 @@ class PostService {
 				return postsResult;
 			}
 
-			const sortedPosts = isNew
-				? PostService._sortAdvancedFeedPosts(postsResult.data)
-				: PostService._sortFeedPosts(postsResult.data);
+			const posts = postsResult.data;
 
 			const feedPostsWithLikes = await Promise.all(
-				sortedPosts.map(async p => {
+				posts.map(async p => {
 					const likeResult = await PostService._likeCount(p.id);
 					const likeCount = likeResult.status === ResultStatus.OK ? likeResult.data : 0;
 
@@ -221,10 +219,16 @@ class PostService {
 		}
 	}
 
+	/**
+	 * @deprecated Old method
+	 */
 	static _sortFeedPosts(feedPosts) {
 		return feedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 	}
 
+	/**
+	 * @deprecated Old method
+	 */
 	static _sortAdvancedFeedPosts(feedPosts) {
 		return feedPosts
 			.sort((a, b) => {

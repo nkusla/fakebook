@@ -9,9 +9,20 @@ import com.fakebook.model.Block
 import java.time.LocalDateTime
 import java.util.List
 import java.util.Iterator
+import java.util.Collections
+import java.util.Comparator
 
 global com.fakebook.model.User currentUser;
 global java.util.List feedPosts;
+
+rule "Reset Score For Feed"
+	agenda-group "feed"
+	salience 200
+when
+	$post : Post()
+then
+  $post.resetScore();
+end
 
 rule "Get Recent Friends Posts"
   agenda-group "feed"
@@ -130,4 +141,16 @@ when
   Post(this == $post) from feedPosts
 then
   feedPosts.remove($post);
+end
+
+rule "Sort Relevant Posts"
+  agenda-group "feed"
+  salience 30
+when
+then
+  Collections.sort(feedPosts, new Comparator<Post>() {
+    public int compare(Post p1, Post p2) {
+      return p2.getCreatedAt().compareTo(p1.getCreatedAt());
+    }
+  });
 end

@@ -8,13 +8,15 @@ import com.fakebook.model.Block
 import com.fakebook.model.Hashtag
 import java.time.LocalDateTime
 import java.util.List
+import java.util.Collections
+import java.util.Comparator
 
 global List allPosts;
 global List allLikes;
 global User currentUser;
 global List feedPosts;
 
-rule "Reset Score"
+rule "Reset Score For Advanced Feed"
 	agenda-group "advanced-feed"
 	salience 200
 when
@@ -89,4 +91,25 @@ when
   Post(this == $post) from feedPosts
 then
   feedPosts.remove($post);
+end
+
+rule "Limit Feed to Top 20 Posts"
+  agenda-group "advanced-feed"
+  salience 1
+when
+then
+  Collections.sort(feedPosts, new Comparator<Post>() {
+    public int compare(Post p1, Post p2) {
+      int scoreComparison = Integer.compare(p2.getScore(), p1.getScore());
+      if (scoreComparison != 0) {
+        return scoreComparison;
+      }
+
+      return p2.getCreatedAt().compareTo(p1.getCreatedAt());
+    }
+  });
+
+  while (feedPosts.size() > 20) {
+    feedPosts.remove(feedPosts.size() - 1);
+  }
 end
